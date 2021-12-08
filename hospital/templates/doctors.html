@@ -1,0 +1,77 @@
+{% extends "layout/master.html" %}
+
+{% block start %}
+{% load static %}
+<div class="row">
+
+	<div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+              	<div class="card-header ">
+              		<div class="row">
+	              		<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+	              			<!-- <a href="/hospital/create-doctor" class="btn btn-outline-primary btn-sm">Create Doctor</a> -->
+	              		</div>
+	              		<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+	              			<h4 class="card-title">Doctors</h4>
+	              		</div>
+	              		<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4"></div>
+              		</div>
+              	</div>
+                <div class="card-body">
+                  
+                  <!-- <p class="card-description">Add class <code>.table-striped</code></p> -->
+                  <div class="table-responsive">
+                    <table id="example" class="table table-striped display expandable-table" style="width:100%">
+                      <thead>
+                        <tr><th>Sr.</th><th>Photo</th><th>Name</th><th>About</th><th>Email</th><th>Mobile</th><th>Approval</th><th>Created Date</th><th>Actions</th></tr>
+                      </thead>
+                      <tbody>
+                      	{% for item in items %}
+                        <tr>
+							<td>{{ item.id }}</td>
+							<td class="py-1"><img src='{% static "icons/doctor-icon.png" %}' alt="profile"/></td>
+							<td>{{ item.name }}</td>
+							<td>--</td>
+							<td>{{ item.email }}</td>
+							<td>{{ item.mobile }}</td>
+							<td>
+								<a href="/hospital/doctor-status/{{ item.id }}">
+									{% if item.status == 0 %}
+									<i class="mdi mdi-toggle-switch-off btndx"></i>
+									{% else %}
+									<i class="mdi mdi-toggle-switch u-on"></i>
+									{% endif %}
+								</a>
+							</td>
+							<td>{{ item.date_joined }}</td>
+							<td>
+								<a href="doctor/{{item.id}}"><i class="mdi mdi-eye btni"></i></a>
+								<a href="doctor-edit/{{item.id}}"><i class="mdi mdi-pencil btns"></i></a>
+								<a href="doctor-delete/{{item.id}}"><i class="mdi mdi-delete btnd"></i></a>
+							</td>
+                        </tr>
+                        {% endfor %}
+                    <!--  
+                    <td>
+                        <div class="progress">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+					<label class="badge badge-danger">Pending</label>
+					<label class="badge badge-warning">In progress</label>
+					<label class="badge badge-info">Fixed</label>
+					<label class="badge badge-success">Completed</label>
+					 -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer">
+                	Notes:
+                </div>
+              </div>
+            </div>
+	
+</div>
+
+{% endblock start %}

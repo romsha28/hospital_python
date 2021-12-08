@@ -1,0 +1,61 @@
+
+.form-group {
+    margin-bottom: 0rem;
+}
+
+.card .card-title {
+    color: #010101;
+    margin-bottom: 0rem;
+    text-transform: capitalize;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.profile-avatar {
+  vertical-align: middle;
+  width: 100%;
+  border-radius: 50%;
+}
+
+.profile-img {
+    margin: 0% 25%;
+    width: 50%;
+    height: 70%;
+}
+
+.treatment-img {
+    margin: 0% 10%;
+    width: 80%;
+    height: 85%;
+}
+
+.treatment-avatar {
+  border-radius: 0% !important;
+}
+
+.file-size {
+    text-align: center;
+    font-size: 12px;
+}
+
+.tbl-h {
+  background: cadetblue;
+  color: white;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+
+

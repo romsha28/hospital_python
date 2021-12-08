@@ -1,0 +1,174 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- <title>Admin</title> -->
+  <title>{{title}}</title>
+  <!-- plugins:css -->
+  <!-- <link href='{% static "assets/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet"> -->
+  <link rel="stylesheet" href='{% static "admin/vendors/feather/feather.css" %}'>
+  <link rel="stylesheet" href='{% static "admin/vendors/ti-icons/css/themify-icons.css" %}'>
+  <link rel="stylesheet" href='{% static "admin/vendors/css/vendor.bundle.base.css" %}'>
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href='{% static "admin/vendors/datatables.net-bs4/dataTables.bootstrap4.css" %}'>
+  <link rel="stylesheet" href='{% static "admin/vendors/ti-icons/css/themify-icons.css" %}'>
+  <link rel="stylesheet" type="text/css" href='{% static "admin/js/select.dataTables.min.css" %}'>
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href='{% static "admin/css/vertical-layout-light/style.css" %}'>
+  <!-- endinject -->
+  <link rel="shortcut icon" href='{% static "icons/icon.png" %}'/>
+  <!-- bootstrap file -->
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+  <!-- bootstrap file-->
+  <!-- jQuery -->
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  <!-- message here -->
+
+  {% if messages %}
+    {% for message in messages %}
+      <script>
+        //alert("{{ message }}");
+      </script>
+    {% endfor %}
+  {% endif %}
+
+<style>
+body  {
+  background-image: url("/static/images/home.jpeg");
+  background-color: #cccccc;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container-scroller">
+
+
+  <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="index.html"><img src='{% static "icons/icon.png" %}' class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="index.html"><img src='{% static "icons/icon.png" %}' alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <!-- <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button> -->
+        <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group">
+              <!-- <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search"> -->
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item"><a class="nav-link" href="{% url "index" %}">Website</a></li>
+          <!-- <img src='{% static "images/home.jpg" %}' alt="profile"/> -->
+          
+
+          {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url "logout" %}">Sign out</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url "register" %}">Sign up</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url "login" %}">Sign in</a></li>
+          {% endif %}
+
+
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              <button class="navbar-toggler navbar-toggler align-self-center" type="button">
+                <span class="icon-menu"></span>
+              </button>
+
+              <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button">
+                <span class="icon-menu"></span>
+              </button>
+              <!-- <img src='{% static "icons/user.png" %}' alt="profile"/> -->
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              {% if user.is_authenticated %}
+              <a href='{% url "settings" %}' class="dropdown-item"><i class="ti-settings text-primary"></i>Settings</a>
+              <a href='{% url "index" %}' class="dropdown-item"><i class="ti-list text-primary"></i>Website</a>
+              <a href='{% url "hospital" %}' class="dropdown-item"><i class="ti-dashboard text-primary"></i>Hospital Admin</a>
+              <a href='{% url "logout" %}' class="dropdown-item"><i class="ti-power-off text-primary"></i>Sign out</a>
+              {% else %}
+              <a href='{% url "register" %}' class="dropdown-item"><i class="ti-file text-primary"></i>Sign up</a>
+              <a href='{% url "login" %}' class="dropdown-item"><i class="ti-power-off text-primary"></i>Sign in</a>
+              {% endif %}
+            </div>
+          </li>
+          
+          <!-- <li class="nav-item nav-settings d-none d-lg-flex">
+            <a class="nav-link" href="#">
+              <i class="icon-ellipsis"></i>
+            </a>
+          </li> -->
+        </ul>
+        <!--  -->
+      </div>
+    </nav>
+
+
+
+     <div class="row">
+
+      <div class="col-lg-12 col-md-12">
+      {% block start %}
+      {% if user.is_authenticated %}
+      <center><h1 style="text-align: center;margin-top: 15%;">welcome back {{user.username}}!</h1></center>
+      {% else %}
+      <center>
+        <h1 style="text-align: center;margin-top: 15%;">log in Admin Panel, here . . .</h1>
+        <a href='{% url "login" %}' class="btn btn-sm btn-success"><i class="ti-power-off"></i> log-in </a>
+      </center>
+      {% endif %}
+      {% endblock %}
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!--  <header class="row">
+      <li><a class="navbar-brand" class="styleheader" href="{% url "index" %}">project</a></li>
+
+      <li><a href="{% url "index" %}">Home</a></li>
+
+      {% if user.is_authenticated %}
+      <li><a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-out"></span> &nbsp; Logout</a></li>
+      {% else %}
+      <li><a href="{% url "register" %}"><span class="glyphicon glyphicon-user"></span> &nbsp; Sign up</a></li>
+      <li><a href="{% url "login" %}"><span class="glyphicon glyphicon-log-in"></span> &nbsp; Log in</a></li>
+      {% endif %}
+    </header>
+   -->
+
+
+  <script src='{% static "admin/vendors/js/vendor.bundle.base.js" %}'></script>
+  <script src='{% static "admin/js/off-canvas.js" %}'></script>
+  <script src='{% static "admin/js/hoverable-collapse.js" %}'></script>
+  <script src='{% static "admin/js/template.js" %}'></script>
+  <script src='{% static "admin/js/settings.js" %}'></script>
+  <script src='{% static "admin/js/todolist.js" %}'></script>
+
+</body>
+
+</html>

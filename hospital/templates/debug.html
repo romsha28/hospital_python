@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>debug</title>
+</head>
+<body>
+
+	<h4>debug</h4>
+	<table>
+	{% for item in items %}
+    <tr>
+		<td>{{ item.id }}</td>
+		<td>{{ item.first_name }} {{ item.last_name }}</td>
+		<td>{{ item.mobile }}</td>
+		<td>{{ item.description }}</td>
+		<td>{{ item.date_joined }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+
+</body>
+</html>

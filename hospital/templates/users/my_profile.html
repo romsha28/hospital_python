@@ -1,0 +1,334 @@
+{% extends "layout/master.html" %}
+
+{% block start %}
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/jquery.datetimepicker.min.css" />
+
+<style type="text/css">
+.timepicker-picker {
+  // border: 1px solid red;
+  // width: 100%;
+  height: 240px; 
+  margin: 0 80px; 
+  display: inline-flex; 
+  flex-direction: column;
+  justify-content: center; 
+}
+.calendar {
+  cursor: pointer;
+}
+.timepicker-picker table td {
+    height: 24px;
+    line-height: 24px;
+    width: 24px;
+}
+.bootstrap-datetimepicker-widget table td.separator { 
+  width: 1px;
+  height: 1px;
+  line-height: 1px;
+} 
+.bootstrap-datetimepicker-widget .timepicker-hour,
+.bootstrap-datetimepicker-widget .timepicker-minute,
+.bootstrap-datetimepicker-widget .glyphicon-chevron-up,
+.bootstrap-datetimepicker-widget .glyphicon-chevron-down {
+  width: 20px;
+  height: 15px; 
+  line-height: 1;
+}
+.bootstrap-datetimepicker-widget table td span:hover {
+    background: none;
+}
+/* --o-- */
+</style>
+
+<div class="row">
+
+  <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-header" style="border-radius: inherit;">
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <a href="/hospital/users" class="btn btn-outline-primary btn-sm">Back</a>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h4 class="card-title">My Profile</h4>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4"></div>
+                    <!-- <p class="card-description">Add class <code>.table-striped</code></p> -->
+                  </div>
+                </div>
+                <div class="card-body">
+                  <form id="formElement" class="form-sample" method="POST" action="/hospital/user-update/{{item.id}}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  
+                    <div class="row">
+                      <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="profile-img">
+                          <img src='{% static "icons/default-img.png" %}' alt="profile" id="blah" class="profile-avatar"/>
+                        </div>
+                   <!-- <div class="treatment-img">
+                          <img src='{% static "icons/default.jpg" %}' alt="profile" id="blah" class="profile-avatar treatment-avatar"/>
+                        </div> -->
+                        <input type="file" name="profile_img" value="" id="imgInp" class="file-size" placeholder="Select An Image" pattern="">
+                      </div>
+                      <div class="col-sm-12 col-md-8 col-lg-8">
+                        <div class="row">
+                          
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Serial No.</label>
+                              <input type="text" name="serial_no" value="TNO-0001" class="form-control" id="exampleInputName1" placeholder="Serial No." readonly>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Name</label>
+                              <input type="text" name="name" value="{{item.name}}" class="form-control" id="exampleInputName1" placeholder="Patient Name" maxlength="32" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Gender</label>
+                              <select name="sex" class="form-control">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Mobile</label>
+                              <input type="tel" name="mobile" value="{{item.mobile}}" class="form-control" id="exampleInputName1" placeholder="Patient Name" maxlength="10" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Email</label>
+                              <input type="email" name="email" value="{{item.email}}" class="form-control" id="exampleInputName1" placeholder="Patient Name" maxlength="32" required>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p class="card-description">Address <hr style="width: 80%;"></p>
+                    <div class="row">
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputName1">Address 1</label>
+                          <input type="text" name="address" value="{{item.address}}" class="form-control" id="exampleInputName1" placeholder="" required>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputName1">Address 2</label>
+                          <input type="text" name="address1" class="form-control" id="exampleInputName1" placeholder="Patient Name">
+                        </div>
+                      </div>
+
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputName1">City</label>
+                          <input type="text" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputName1">State</label>
+                          <input type="text" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputName1">Country</label>
+                          <select class="form-control">
+                            <option>America</option>
+                            <option>Italy</option>
+                            <option>Russia</option>
+                            <option>Britain</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputName1">Postcode</label>
+                          <input type="text" name="zipcode" class="form-control" />
+                        </div>
+                      </div>
+                      
+                      <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                          <label for="exampleInputName1">Description</label>
+                          <textarea class="form-control" name="description" id="exampleInputName1" placeholder="Type here...">{{item.description}}</textarea>
+                        </div>
+                      </div>
+                    </div>
+
+                 <br><button type="submit" class="btn btn-primary mb-2">Update Your Profile</button>
+                  <!-- <button type="button" id="formElementSubmit" class="btn btn-primary mb-2">Get An Appointment</button> -->
+                  
+
+                  <!-- =================================2================================= -->
+                  </form>
+                <!-- ========= closed card-body ============= -->
+                </div>
+
+                <div class="card-footer">
+                  <p>Notes:- </p>
+                </div>
+
+              </div>
+            </div>
+  
+</div>
+
+
+
+<!-- Here by using Id selector the datetime picker will load on this input element -->
+
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"></script>
+<script src="http://cdn.craig.is/js/rainbow-custom.min.js"></script>
+<script>
+      $(document).ready(function() {
+          $.datetimepicker.setLocale('pt-BR');
+        $('#datetimepicker').datetimepicker();
+      });
+</script>
+
+
+<script type="text/javascript">
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#blah').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("#imgInp").change(function(){
+    readURL(this);
+});
+</script>
+
+<script type="text/javascript">
+// jquery
+$(function () {
+    $('#datetimepicker').datetimepicker({ 
+        allowInputToggle: true,
+        showClose: true, //close the picker
+        format: 'YYYY-MMM-DD HH:mm', //YYYY-MMM-DD LT
+        calendarWeeks: true,
+        inline: false,
+        sideBySide: true
+    });
+    $('#datetimepicker-sidebyside').datetimepicker({
+        showTodayButton: true,
+        showClose: true, //close the picker
+        showClear: true, //clear selection 
+        format: 'YYYY-MMM-DD HH:mm', //YYYY-MMM-DD LT
+        calendarWeeks: true,
+        inline: true,
+        sideBySide: true
+    });
+    $('#datetimepicker-collapse').datetimepicker({
+        showClose: true, //close the picker
+        format: 'YYYY-MMM-DD HH:mm', //YYYY-MMM-DD LT
+        calendarWeeks: true,
+        inline: true,
+        collapse: true
+    }); 
+});
+
+// angular js 
+(function(){
+  'use strict';
+  
+    var datetime = angular.module('dateTimeSandbox', []);
+    datetime.directive('datetimepicker', function(){
+      return {
+        require: '?ngModel',
+        restrict: 'AE',
+        link: function(scope, elem, attrs){ 
+          console.log('fired directive'); 
+          elem.datetimepicker({ 
+            allowInputToggle: true,
+            calendarWeeks: true,  
+            showTodayButton: true,
+            showClose: true, //close the picker
+            // showClear: true, //clear selection 
+            format: 'YYYY-MMM-DD HH:mm',
+            inline: false, 
+            sideBySide: true,
+            widgetPositioning: {
+              horizontal: 'auto',
+              vertical: 'bottom'
+            }
+          });
+          
+          elem.on("dp.show", function (e) {  
+            $('[data-action="today"] span').removeClass('glyphicon-screenshot').addClass('glyphicon-calendar');
+            $('[data-action="close"]').attr('title', 'Save');
+            $('[data-action="close"] span').removeClass('glyphicon-remove').addClass('glyphicon-ok');
+          });  
+              
+        } 
+      };
+      
+    }); 
+})();
+
+</script>
+
+
+
+
+<script type="text/javascript">
+
+$("#xformElement").submit(function(){
+  alert('Welcome zero');
+    var formData = new FormData($(this)[0]);
+    formData.append('other_data',$("#someInputData").val());
+    $.ajax({
+        type: "POST",
+        url: postDataUrl,
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function(data, textStatus, jqXHR) {
+           //process data
+        },
+        error: function(data, textStatus, jqXHR) {
+           //process error msg
+        },
+});
+
+$('xform').submit(function(e){
+  alert('Welcome');
+    var data;
+    data = new FormData();
+    data.append( 'file', $( '#file' )[0].files[0] );
+    $.ajax({
+        url: 'http://hacheck.tel.fer.hr/xml.pl',
+        data: data,
+        processData: false,
+        type: 'POST',
+        success: function ( data ) {
+            alert( data );
+        }
+    });
+
+    e.preventDefault();
+});
+
+</script>
+
+{% endblock start %}

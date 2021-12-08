@@ -1,0 +1,67 @@
+{% extends "layout/master.html" %}
+
+{% block start %}
+{% load static %}
+<div class="row">
+
+	<div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+              	<div class="card-header" style="border-radius: inherit;">
+              		<div class="row">
+	              		<div class="col-sm-4 col-md-4 col-lg-4">
+	              			<a href="/hospital/plans" class="btn btn-outline-primary btn-sm">Back</a>
+	              		</div>
+	              		<div class="col-sm-4 col-md-4 col-lg-4">
+	              			<h4 class="card-title"> Plan Details</h4>
+	              		</div>
+	              		<div class="col-sm-4 col-md-4 col-lg-4"></div>
+                	</div>
+                </div>
+                <div class="card-body">
+
+                  <div class="table-responsive">
+                    <table class="table xtable">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class="treatment-img">
+                              {% if item.primary_image %}
+                                <img src='/media/{{item.primary_image}}' alt="profile" id="blah" class="profile-avatar treatment-avatar" style="width: 130px;height: auto;" />
+                              {% else %}
+                                <img src='{% static "icons/default-img.png" %}' alt="profile" id="blah" class="profile-avatar treatment-avatar" style="width: 130px;height: auto;"/>
+                              {% endif %}
+                              
+                            </div>
+                          </td>
+                       
+                          <td>
+                            <table class="table xtable">
+                              <tbody>
+                                <tr>
+                                  <td style="width: 25%;">Plan Name:</td><td>{{item.name}}</td>
+                                </tr>
+                                <tr>
+                                  <td>Plan description:</td><td>{{item.description}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                    
+                <!-- ========= closed card-body ============= -->
+                </div>
+
+                <div class="card-footer">
+                	
+                </div>
+
+              </div>
+            </div>
+	
+</div>
+
+
+{% endblock start %}

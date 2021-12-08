@@ -1,0 +1,65 @@
+{% extends "layout/master.html" %}
+
+{% block start %}
+{% load static %}
+<div class="row">
+
+	<div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+              	<div class="card-header" style="border-radius: inherit;">
+              		<div class="row">
+	              		<div class="col-sm-4 col-md-4 col-lg-4">
+	              			<a href="/hospital/appointments" class="btn btn-outline-primary btn-sm">Back</a>
+	              		</div>
+	              		<div class="col-sm-4 col-md-4 col-lg-4">
+	              			<h4 class="card-title"> Appointment Details</h4>
+	              		</div>
+	              		<div class="col-sm-4 col-md-4 col-lg-4"></div>
+                		<!-- <p class="card-description">Add class <code>.table-striped</code></p> -->
+                	</div>
+                </div>
+                <div class="card-body">
+
+                  <div class="table-responsive">
+                    <table class="table xtable">
+                      <tbody>
+                        <tr>
+                          <td>Patient Name</td><th>{{item.name}}</th>
+                          <td>Doctor Name</td><th></th>
+                        </tr>
+                        <tr>
+                          <td>Patient Gender</td><th>{{item.sex}}</th>
+                          <td>Patient Age</td><th></th>
+                        </tr>
+                        <tr>
+                          <td>Patient Mobile</td><th>{{item.mobile}}</th>
+                          <td>Patient Address</td><th>{{item.address}}</th>
+                        </tr>
+                        <tr><th colspan="4">Doctor's Details:<hr style="width: 90%;"></th></tr>
+                        <tr>
+                          <td>Doctor Name</td><th>{{item.name}}</th>
+                          <td>Specialization</td><th></th>
+                        </tr>
+                        <tr>
+                          <td>Illness Information</td><th>{{item.illness_information}}</th>
+                          <td>About Illness</td><th>{{item.description}}</th>
+                        </tr>
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                    
+                <!-- ========= closed card-body ============= -->
+                </div>
+
+                <div class="card-footer">
+                	
+                </div>
+
+              </div>
+            </div>
+	
+</div>
+
+
+{% endblock start %}
