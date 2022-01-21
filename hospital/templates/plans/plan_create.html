@@ -48,7 +48,7 @@
               	<div class="card-header" style="border-radius: inherit;">
               		<div class="row">
 	              		<div class="col-sm-4 col-md-4 col-lg-4">
-	              			<a href="/hospital/plans" class="btn btn-outline-primary btn-sm">Back</a>
+	              			<a href="/hospital/plans" class="btn btn-outline-primary btn-sm"><i class="fa fa-arrow-left rt_tx" aria-hidden="true"></i> Back</a>
 	              		</div>
 	              		<div class="col-sm-4 col-md-4 col-lg-4">
 	              			<h4 class="card-title">Create Plan</h4>
@@ -85,6 +85,21 @@
                               <input type="text" name="name" class="form-control" id="exampleInputName1" placeholder="Treatment Name" maxlength="32" required>
                             </div>
                           </div>
+
+                          <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Plan Amount</label>
+                              <input type="number" name="amount" class="form-control" id="exampleInputName1" placeholder="Treatment Name" maxlength="32" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Plan Expiry (in months)</label>
+                              <input type="number" name="expiry_in_months" class="form-control" id="exampleInputName1" placeholder="Treatment Name" maxlength="32" required>
+                            </div>
+                          </div>
+
+                           
                           <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="form-group">
                               <label for="exampleInputName1">Plan Description</label>
@@ -97,8 +112,8 @@
                       </div>
                     </div>
 
-                 <br><button type="submit" class="btn btn-primary mb-2">Create An Plan</button>
-                  <!-- <button type="button" id="formElementSubmit" class="btn btn-primary mb-2">Get An Appointment</button> -->
+                <br><button type="submit" class="btn btn-primary mb-2">Create An Plan</button>
+                <!-- <button type="button" id="formElementSubmit" class="btn btn-primary mb-2">Get An Appointment</button> -->
                   
 
                   <!-- =================================2================================= -->

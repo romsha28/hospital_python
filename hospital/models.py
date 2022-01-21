@@ -86,8 +86,10 @@ class Appointments(models.Model):
 	pincode = models.IntegerField(null=True, blank=True)
 	doctor_id = models.IntegerField(null=True, blank=True)
 	appointment_id = models.CharField(max_length=100, null=True, blank=True)
+	meeting_time_period = models.CharField(max_length=100, null=True, blank=True)
 	doctor_appointment_at = models.DateTimeField(null=True, blank=True)
 	translation_id = models.CharField(max_length=100, null=True, blank=True)
+	language = models.CharField(max_length=250, null=True, blank=True)
 	amount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 	payment_status = models.CharField(max_length=50, choices=PAYMENT_STATUS, default='Payment-Not-Completed')
 	payment_type = models.CharField(max_length=20, choices=PAYMENT_METHOD, default='cod')
@@ -101,6 +103,26 @@ class Appointments(models.Model):
 	updated_at = models.DateTimeField(null=True, blank=True)
 	deleted_at = models.DateTimeField(null=True, blank=True)
 	
+	def __str__(self):
+		return self.name
+
+class DoctorPrescriptions(models.Model):
+	appointment = models.ForeignKey(Appointments, on_delete=models.CASCADE, null=True, blank=True)
+	name = models.CharField(max_length=150, null=True, blank=True, default="Doctor Prescription")
+	message = models.TextField(null=True, blank=True)
+	prescription_file = models.FileField('prescription_file', upload_to="prescriptions/", null=True, blank=True)
+	status = models.BooleanField(default=False)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "DoctorPrescriptions"
+
 	def __str__(self):
 		return self.name
 
@@ -243,7 +265,7 @@ class TreatmentCategories(models.Model):
 	name = models.CharField(max_length=50, null=True, blank=True, default="heading text")
 	description = models.TextField(null=True, blank=True)
 	slug = models.CharField(max_length=100, null=True, blank=True)
-	primary_image = models.FileField('primary_image', upload_to="treatments/", null=True, blank=True)
+	primary_image = models.FileField('primary_image', upload_to="treatments_categories/", null=True, blank=True)
 	treatment_id = models.IntegerField(null=True, blank=True)
 	sort_id = models.IntegerField(null=True, blank=True)
 	status = models.BooleanField(default=False)

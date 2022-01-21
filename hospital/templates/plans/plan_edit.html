@@ -16,7 +16,10 @@
               	<div class="card-header" style="border-radius: inherit;">
               		<div class="row">
 	              		<div class="col-sm-4 col-md-4 col-lg-4">
-	              			<a href="/hospital/plans" class="btn btn-outline-primary btn-sm">Back</a>
+	              			<!-- <a href="/hospital/plans" class="btn btn-outline-primary btn-sm"><i class="fa fa-arrow-left rt_tx" aria-hidden="true"></i> Back</a> -->
+                      <a href="/hospital/plans" class="btn btn-primary btn-sm" style="margin-bottom: 5px;">
+                        <i class="fa fa-arrow-left rt_tx" aria-hidden="true"> Back</i> 
+                      </a>
 	              		</div>
 	              		<div class="col-sm-4 col-md-4 col-lg-4">
 	              			<h4 class="card-title">Create Plan</h4>
@@ -54,7 +57,19 @@
                           <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="form-group">
                               <label for="exampleInputName1">Plan Name</label>
-                              <input type="text" name="name" value="{{item.name}}" class="form-control" id="exampleInputName1" placeholder="Treatment Name" maxlength="32" required>
+                              <input type="text" name="name" value="{{item.name}}" class="form-control" id="exampleInputName1" placeholder="Plan Name" maxlength="32" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Plan Amount</label>
+                              <input type="text" name="amount" value="{{item.amount}}" class="form-control" id="exampleInputName1" placeholder="Plan Amount" maxlength="32" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                              <label for="exampleInputName1">Plan Expiry (in months)</label>
+                              <input type="number" name="expiry_in_months" value="{{item.expiry_in_months}}" class="form-control" id="exampleInputName1" placeholder="Plan Expiry" maxlength="32" required>
                             </div>
                           </div>
                           <div class="col-sm-12 col-md-12 col-lg-12">

@@ -29,6 +29,8 @@
    <!-- hospital css -->
   <link rel="stylesheet" type="text/css" href='{% static "css/hospital.css" %}'>
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style type="text/css">
 .btni {
     font-size: x-large;
@@ -85,6 +87,131 @@
     font-weight: bold;
 }
 </style>
+<style type="text/css">
+
+.pagination {
+  display: inline-block;
+  float: right;
+}
+
+.pagination li {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+}
+
+.pagination li.active {
+  background-color: #4b49ac;
+  color: white;
+  border: 1px #4b49ac;
+}
+
+.pagination li:hover:not(.active) {background-color: #ddd;}
+/*---------------------------------------------------------*/
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+}
+
+.pagination a.active {
+  background-color: #4b49ac;
+  color: white;
+  border: 1px #4b49ac;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+.alert-dismissible .close {
+  padding: 0.5rem 0.25rem !important;
+}
+.alert i {
+  margin-right: 0.25rem;
+}
+
+.panel-default {
+   border: solid 1px #ddd;
+}
+
+.menu_title {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    margin: 0 5px;
+}
+
+.profile-head {
+    width: 100%;
+    /*background-color: rgb(65, 105, 255);*/
+    background: #274aa7;
+    padding: 15px 0 0px 5px;
+    border-radius: 30px;
+}
+
+.profile-head img {
+    height: 180px;
+    width: 180px;
+    margin: 0 auto;
+    border: 5px solid #fff;
+    border-radius: 5px;
+}
+
+.profile-head h5 {width: 100%;padding:5px 5px 0px 5px;text-align:justify;font-weight: bold;color: #fff;font-size: 25px;text-transform:capitalize;
+margin-bottom: 0;}
+.profile-head p {width: 100%;text-align: justify;padding:0px 5px 5px 5px;color: #fff;font-size:17px;text-transform:capitalize;margin:0;}
+.profile-head a {width: 100%;text-align: center;padding: 10px 5px;color: #fff;font-size: 15px;text-transform: capitalize;}
+.profile-head ul { list-style:none;padding: 0;}
+.profile-head ul li { display:block; color:#ffffff;padding:5px;font-weight: 400;font-size: 15px;}
+.profile-head ul li:hover span { color:rgb(0, 4, 51);}
+.profile-head ul li span { color:#ffffff;padding-right: 10px;}
+.profile-head ul li a { color:#ffffff;}
+.profile-head h6 {width: 100%;text-align: center;color: #fff;font-size: 
+  15px;text-transform: uppercase;margin-bottom: 0; margin-top: 20px;
+    font-weight: 600;}
+
+
+.dct_pic{ text-align: center; }
+
+.well {
+    text-align: center;
+    min-height: 15px;
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+}
+
+.mnu_tb{}
+.mnu_tb ul{}
+.mnu_tb ul li{}
+.mnu_tb ul li a {
+    color: #000;
+    background: #e7e7e7;
+    padding: 10px 14px;
+    margin: 2px;
+    margin-top: 30px;
+    float: left;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.mnu_tb ul li a.active{ background: #274aa7; color: #fff; }
+
+.rt_tx{margin: 0 7px 0px 0px;}
+
+</style>
+
 
 </head>
 <body>
@@ -374,26 +501,8 @@
               <span class="menu-title">Dashboard</span>
             </a>
           </li>     
-<!-- 
-Dashboard
-Appointment 
-Category
-Treatment 
-Doctor  
-Patient 
-Blog  
-Banner  
-Subscription History
-------------------------
-Users
-Booking an appointment
-Docters
-Treatments
-Categories/Category
-Subcategories
-Blogs
- -->
-          <li class="nav-item">
+
+          <!-- <li class="nav-item">
             <a class="nav-link" href="/hospital/appointments">
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Appointments</span>
@@ -405,7 +514,7 @@ Blogs
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Patients</span>
             </a>
-          </li>
+          </li> -->
 
           <li class="nav-item">
             <a class="nav-link" href="/hospital/doctors">
@@ -432,93 +541,21 @@ Blogs
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-treatments" aria-expanded="false" aria-controls="ui-treatments">
               <i class="icon-layout menu-icon"></i>
-              <span class="menu-title">Treatments</span>
+              <span class="menu-title">Master's Data</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-treatments">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/hospital/treatments">Treatments</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/hospital/treatment-categories">Treatment Categories</a></li>
-                <!-- <li class="nav-item"> <a class="nav-link" href="#">Next</a></li> -->
-              </ul>
-            </div>
-          </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-masters" aria-expanded="false" aria-controls="ui-masters">
-              <i class="icon-layout menu-icon"></i>
-              <span class="menu-title">Masters</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-masters">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/hospital/categories">Categories</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/hospital/treatments">Specialty</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/hospital/treatment-categories">Health Issues</a></li>
+                <!-- <li class="nav-item"> <a class="nav-link" href="/hospital/categories">Categories</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/hospital/subcategories">Subcategories</a></li>
+                <li class="nav-item"> <a class="nav-link" href="#">Next</a></li> -->
               </ul>
             </div>
-          </li> -->
+          </li>
 
-<!--           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="icon-columns menu-icon"></i>
-              <span class="menu-title">Form elements</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="form-elements">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-              <i class="icon-bar-graph menu-icon"></i>
-              <span class="menu-title">Charts</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-              <i class="icon-grid-2 menu-icon"></i>
-              <span class="menu-title">Tables</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="tables">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic table</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-              <i class="icon-contract menu-icon"></i>
-              <span class="menu-title">Icons</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="icons">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/icons/mdi.html">Mdi icons</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <i class="icon-head menu-icon"></i>
-              <span class="menu-title">User Pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-              </ul>
-            </div>
-          </li> -->
+         
 
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-user" aria-expanded="false" aria-controls="ui-user">
@@ -531,7 +568,7 @@ Blogs
                 <!-- <li class="nav-item"> <a class="nav-link" href="{% url 'index' %}">My Profile</a></li> -->
                 <li class="nav-item"> <a class="nav-link" href="/hospital/myprofile">My Profile</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/hospital/user-list">All Users</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/hospital/user-roles">User Roles</a></li>
+                <!-- <li class="nav-item"> <a class="nav-link" href="/hospital/user-roles">User Roles</a></li> -->
                 <!-- <li class="nav-item"> <a class="nav-link" href="/hospital/dashborad">Test</a></li> -->
               </ul>
             </div>
@@ -660,9 +697,23 @@ Blogs
           
           {% if messages %}
               {% for message in messages %}
-                <div class="alert {{ message.tags }} m-2 msg-box" id="msg" role="alert">{{ message }}</div>
+                <div class="alert alert-dismissible {{ message.tags }} m-2 msg-box" id="msg" role="alert">
+                  <strong>{{message}}</strong>
+                  <button type="button" class="close" data-dismiss="alert" style="float: right;">
+                    <i class="mdi mdi-close-box"></i>
+                  </button>
+                </div>
               {% endfor %}
           {% endif %}
+
+<!-- {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-dismissible alert-success">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      <strong>{{message}}<strong>
+    </div>
+ {% endfor %}
+{% endif %} -->
 
           {% block start %}
 
@@ -714,12 +765,12 @@ Blogs
     if ($('#msg').length > 0) {
       $('#msg').remove();
     }
-  }, 3000)
+  }, 10000)
 //message_container
 var message_ele = document.getElementById("message");
 setTimeout(function(){ 
    message_ele.style.display = "none"; 
-}, 3000);
+}, 10000);
 </script>
 
 

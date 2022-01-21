@@ -1,21 +1,21 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, get_list_or_404, render, redirect
 from reportlab.pdfgen import canvas
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 #from utils import render_to_pdf 
 from datetime import date, datetime
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http.response import JsonResponse
 from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.core.mail import EmailMessage
-#from .models import Contacts, Appointments
+#from .models import Content, Contacts, Appointments
 from .models import *
 from apimaster.models import *
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 #from django.contrib.messages import constants as messages
-from apimaster.models import UserProfiles
+#from apimaster.models import UserProfiles
 from decimal import Decimal
 from hospitalapp.settings import MEDIA_ROOT, MEDIA_URL
 from django.db import connection
@@ -26,6 +26,7 @@ from django.contrib.auth.decorators import login_required
 from django import template
 from django.utils.safestring import mark_safe
 from django.db.models import Sum
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 IMAGE_FILE_TYPES = ['png', 'jpg', 'jpeg']
 
@@ -51,8 +52,16 @@ def index(request):
 	total_doctors = UserProfiles.objects.filter(occupation='doctor').count()
 	total_treatments = Treatments.objects.count()
 	title = 'Dashboard'
+	today = datetime.now().date()
 	#return HttpResponse('<h4>index</h4>')
-	return render(request, "dashboard.html", {'title': title, "total_appointments" : total_appointments, "total_treatments" : total_treatments, "total_doctors" : total_doctors})
+	context = {
+	'title': title,
+	"total_appointments" : total_appointments, 
+	"total_treatments" : total_treatments, 
+	"total_doctors" : total_doctors,
+	"today":today,
+	}
+	return render(request, "dashboard.html", context)
 
 @login_required
 def dashboard(request):
@@ -67,9 +76,17 @@ def getList(request):
 		# Contacts
 		xitems = Contacts.objects.filter(is_deleted=False)
 		items_alls = Contacts.objects.all()
-		name='Yogesh Soni'
+		p = Paginator(users, 10)
+		page_number = request.GET.get('page')
+		try:
+		    page_obj = p.get_page(page_number)
+		except PageNotAnInteger:
+		    page_obj = p.page(1)
+		except EmptyPage:
+		    page_obj = p.page(p.num_pages)
 		title='view'
 		today = datetime.now().date()
+		context = {'title': title, 'items': page_obj, 'today':today,"items_alls" : items_alls}
 		messages.success(request, 'Welcome!')
 		# print("Error: missing one of the libraries (numpy, pyfits, scipy, matplotlib)")
 		# variable = "Yogesh Soni"
@@ -84,7 +101,7 @@ def getList(request):
     # sendemail('yogeshsoni',subject,'EmailMessage text')
     # ======== Mail Send ==================================
     #return HttpResponse('<h4>User List</h4>')
-	return render(request, "user_list.html", {'title': title, "today" : today, "items" : users, "items_alls" : items_alls})
+	return render(request, "user_list.html", context)
 
 @login_required
 def getView(request, id):
@@ -217,10 +234,56 @@ def getDoctorDetails(request, id):
 		serial_no = getGenerateRefKey('UserProfiles', 'DOC')
 		current_user = request.user.id
 		try:
-			item = UserProfiles.objects.filter(id=id)[0]
+			#item = UserProfiles.objects.get(id=id)[0]
+			#item = UserProfiles.objects.filter(id=id,occupation='doctor').first()
+			item = get_object_or_404(UserProfiles, id=id, occupation='doctor')
+			if item:
+				pass
+				if item.occupation == 'doctor':
+					user_id = item.users_id
+					# Section A
+					council = UsersRegistrationCouncils.objects.filter(user_id=user_id).first()
+					education = UsersEducations.objects.filter(user_id=user_id)
+					clinic = UsersClinics.objects.filter(user_id=user_id).first()
+					# Section B
+					IdentityProof = UsersIdentityProofs.objects.filter(user_id=user_id)
+					Registration = MedicalRegistrationProofs.objects.filter(user_id=user_id)
+					Establishment = EstablishmentProofs.objects.filter(user_id=user_id)
+					# Section C
+					MapLocation = MapLocations.objects.filter(user_id=user_id)
+					EstablishmentTiming = EstablishmentTimings.objects.filter(user_id=user_id)
+					ConsultationFee = ConsultationFees.objects.filter(user_id=user_id).first()
+					DoctorVerification = DoctorVerifications.objects.filter(user_id=user_id)
+					context = {
+				        'title': title,
+				        "serial_no":serial_no, 
+						"current_user":current_user,
+						"item" : item,
+						"council":council,
+						"education":education,
+						"clinic":clinic,
+						"identityproof":IdentityProof,
+						"registration":Registration,
+						"establishment":Establishment,
+						"maplocation":MapLocation,
+						"establishmenttiming":EstablishmentTiming,
+						"consultationfee":ConsultationFee,
+						"verifications":DoctorVerification,
+				    }
+				else:
+					return HttpResponse({"You don\'t have permission to access this resource."}, status=401)
+			else:
+				return HttpResponse({"Error": "Record does not exist"}, status=404)
+				#return HttpResponse(status=404)
 		except ObjectDoesNotExist:
-			return HttpResponse(status=404)
-	return render(request, "doctor_details.html", {'title': title, "item" : item, "serial_no":serial_no, "current_user":current_user})
+			now = datetime.now()
+			html = "<html><body><h4>Record does not exist.</h4><p>Time:%s</p></body></html>" % now
+			return HttpResponse(html)
+			#return HttpResponseNotFound('<h4 style="text-align: center;margin-top: 10%;">Record does not exist</h4>')
+			#raise Http404("Record does not exist")
+			#return HttpResponse({"Error": "Record does not exist","Error": "Record does not exist"}, status=404)
+			#return HttpResponse(status=401)
+	return render(request, "doctor_details.html", context)
 
 @login_required
 def getDoctorEdit(request, id):
@@ -259,6 +322,36 @@ def getDoctorDelete(request, id):
 			obj.save()
 			messages.success(request, 'Deleted!')
 	return HttpResponseRedirect('/hospital/doctors')
+
+@login_required
+def getDoctoVerification(request):
+	if request.method == 'POST':
+		id = request.POST['id']
+		userid = request.POST['user_id']
+		obj = UserProfiles.objects.get(pk=id)
+		dobj = DoctorVerifications()
+		name = request.POST['name']
+		dobj.name = name
+		dobj.message = request.POST['message']
+		dobj.user_id = obj.users_id
+		dobj.save()
+		if name == 'Aprooved':
+			obj.verification = 1
+			obj.verification_text = name
+			obj.save()
+			messages.success(request, 'Profile Aprooved!')
+		elif name == 'Rejected':
+			obj.verification = 2
+			obj.verification_text = name
+			obj.save()
+			messages.success(request, 'Profile Rejected!')
+		else:
+			obj.verification = 0
+			obj.verification_text = name
+			obj.save()
+			messages.success(request, f'Profile {name}!')
+	#return redirect(f'{redirect_url}?{parameters}')
+	return HttpResponseRedirect(f'/hospital/doctor/{id}')
 
 #==================== Patients ==============================================================================
 @login_required
@@ -376,8 +469,35 @@ def getTreatments(request):
 	if request.method == 'GET':
 		#items = UserProfiles.objects.filter(is_deleted=False)
 		items = Treatments.objects.all()
+		p = Paginator(items, 10)
+		page_number = request.GET.get('page')
+		try:
+		    page_obj = p.get_page(page_number)
+		except PageNotAnInteger:
+		    page_obj = p.page(1)
+		except EmptyPage:
+		    page_obj = p.page(p.num_pages)
 		title='view'
-	return render(request, "treatments/treatments.html", {'title': title, "items" : items})
+		today = datetime.now().date()
+		context = {'title': title,'items': page_obj,'today':today}
+	return render(request, "treatments/treatments.html", context)
+
+# def index(request):
+#     posts = Post.objects.all()  # fetching all post objects from database
+#     p = Paginator(posts, 5)  # creating a paginator object
+#     # getting the desired page number from url
+#     page_number = request.GET.get('page')
+#     try:
+#         page_obj = p.get_page(page_number)  # returns the desired page object
+#     except PageNotAnInteger:
+#         # if page_number is not an integer then assign the first page
+#         page_obj = p.page(1)
+#     except EmptyPage:
+#         # if page is empty then return last page
+#         page_obj = p.page(p.num_pages)
+#     context = {'page_obj': page_obj}
+#     # sending the page object to index.html
+#     return render(request, 'index.html', context)
 
 @login_required
 def getCreateTreatments(request):
@@ -469,15 +589,25 @@ def getDeleteTreatments(request, id):
 def getTreatmentCategories(request):
 	if request.method == 'GET':
 		#items = UserProfiles.objects.filter(is_deleted=False)
-		items = Treatments.objects.all()
+		items = TreatmentCategories.objects.all()
+		p = Paginator(items, 10)
+		page_number = request.GET.get('page')
+		try:
+		    page_obj = p.get_page(page_number)
+		except PageNotAnInteger:
+		    page_obj = p.page(1)
+		except EmptyPage:
+		    page_obj = p.page(p.num_pages)
 		title='view'
-	return render(request, "treatments/treatments.html", {'title': title, "items" : items})
+		today = datetime.now().date()
+		context = {'title': title, 'items': page_obj, 'today':today}
+	return render(request, "treatments_categories/treatments_categories.html", context)
 
 @login_required
 def getCreateTreatmentCategories(request):
 	if request.method == 'GET':
 		title='Create Treatments'
-	return render(request, "treatments/treatment_create.html", {'title': title})
+	return render(request, "treatments_categories/treatments_categories_create.html", {'title': title})
 
 @login_required
 def postStoreTreatmentCategories(request):
@@ -489,7 +619,7 @@ def postStoreTreatmentCategories(request):
 			obj.primary_image = request.FILES['primary_image']
 		obj.save()
 		messages.success(request, 'Successfully Inserted!')
-	return HttpResponseRedirect('/hospital/treatments')
+	return HttpResponseRedirect('/hospital/treatment-categories')
 
 @login_required
 def getStatusTreatmentCategories(request, id):
@@ -503,7 +633,7 @@ def getStatusTreatmentCategories(request, id):
 			obj.status = 0
 			obj.save()
 			messages.error(request, 'Status Deactivated!')
-	return HttpResponseRedirect('/hospital/treatments')
+	return HttpResponseRedirect('/hospital/treatment-categories')
 
 @login_required
 def getViewTreatmentCategories(request, id):
@@ -513,7 +643,7 @@ def getViewTreatmentCategories(request, id):
 			item = Treatments.objects.filter(id=id)[0]
 		except ObjectDoesNotExist:
 			return HttpResponse(status=404)
-	return render(request, "treatments/treatment_view.html", {'title': title, "item" : item})
+	return render(request, "treatments/treatments_categories_view.html", {'title': title, "item" : item})
 
 @login_required
 def getEditTreatmentCategories(request, id):
@@ -523,7 +653,7 @@ def getEditTreatmentCategories(request, id):
 			item = Treatments.objects.filter(id=id)[0]
 		except ObjectDoesNotExist:
 			return HttpResponse(status=404)
-	return render(request, "treatments/treatment_edit.html", {'title': title, "item" : item})
+	return render(request, "treatments/treatments_categories_edit.html", {'title': title, "item" : item})
 
 @login_required
 def postUpdateTreatmentCategories(request, id):
@@ -535,7 +665,7 @@ def postUpdateTreatmentCategories(request, id):
 			obj.primary_image = request.FILES['primary_image']
 		obj.save()
 		messages.success(request, 'Successfully updated!')
-	return HttpResponseRedirect('/hospital/treatments')
+	return HttpResponseRedirect('/hospital/treatment-categories')
 
 @login_required
 def getDeleteTreatmentCategories(request, id):
@@ -545,7 +675,7 @@ def getDeleteTreatmentCategories(request, id):
 			obj.is_deleted = 1
 			obj.save()
 			messages.success(request, 'Deleted!')
-	return HttpResponseRedirect('/hospital/treatments')
+	return HttpResponseRedirect('/hospital/treatment-categories')
 
 
 # ===== appointment =================================================================================
@@ -665,9 +795,10 @@ def getAppointmentx(request):
 def getPlans(request):
 	if request.method == 'GET':
 		#items = UserProfiles.objects.filter(is_deleted=False)
+		today = datetime.now().date()
 		items = SubscriptionPlans.objects.all()
 		title='view'
-	return render(request, "plans/plans.html", {'title': title, "items" : items})
+	return render(request, "plans/plans.html", {'title': title, "items" : items, "today":today})
 
 @login_required
 def getCreatePlans(request):
@@ -680,6 +811,8 @@ def postStorePlans(request):
 	if request.method == 'POST':
 		obj = SubscriptionPlans()
 		obj.name = request.POST['name']
+		obj.amount = request.POST['amount']
+		obj.expiry_in_months = request.POST['expiry_in_months']
 		obj.description = request.POST['description']
 		if len(request.FILES) != 0:
 			obj.primary_image = request.FILES['primary_image']
@@ -766,7 +899,8 @@ def getPlanSubscriptions(request):
 		# print(row)
 		# var_dump(row)
 		title='view'
-	return render(request, "plans/plan_subscriptions.html", {'title': title, "items" : items})
+		today = datetime.now().date()
+	return render(request, "plans/plan_subscriptions.html", {'title': title, "items" : items,"today":today})
 
 @login_required
 def getStatusPlanSubscriptions(request, id):

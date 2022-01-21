@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '=pt$(j6v5llxh@wql=$f@pb0#6lqi!lq2f((bo!^p$os*k=o4)'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production! True, False
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -44,12 +44,14 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'corsheaders',
     'rest_framework',
-    #'rest_framework.authtoken',
+    'rest_framework.authtoken',
     'knox',
     'hospital',
     'website',
     'apimaster',
-    
+    'verification',
+    'clear_cache',
+    #'django.contrib.gis',
 ]
 
 MIDDLEWARE = [
@@ -138,12 +140,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        #'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-        'knox.auth.TokenAuthentication',
+        'knox.auth.TokenAuthentication', # For Token Verification
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        
     ],
     'DEFAULT_PERMISSION_CLASSES': [
+        #'rest_framework.permissions.IsAdminUser',
         #'rest_framework.permissions.IsAuthenticated',
     ]
 }
@@ -204,8 +208,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'dashboard'
-
+#LOGIN_REDIRECT_URL = 'dashboard'
 # This will print email in Console.
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
 

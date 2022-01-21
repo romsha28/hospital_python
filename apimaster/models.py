@@ -3,6 +3,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from datetime import date
 from django.utils import timezone
 from django.contrib.auth.models import User
+#from django.contrib.gis.db import models
 # from django.views.decorators.csrf import csrf_protect
 
 SEX_CHOICES = (
@@ -33,9 +34,12 @@ class UserProfiles(models.Model):
 	dob = models.DateField(null=True, blank=True)
 	occupation = models.CharField(max_length=20, choices=Occupation, default='patient')
 	specialties = models.CharField(max_length=150, null=True, blank=True)
-	photo = models.CharField(max_length=100, null=True, blank=True)
+	specialty_id = models.IntegerField(null=True, blank=True)
+	language = models.CharField(max_length=250, null=True, blank=True)
+	language_id = models.IntegerField(null=True, blank=True)
+	photo = models.FileField('photo', upload_to="profile_photo/", null=True, blank=True)
 	sex = models.CharField(max_length=20, choices=SEX_CHOICES, default='male')
-	email = models.EmailField(max_length = 254, unique = True)
+	email = models.EmailField(max_length = 150, null=True, blank=True)
 	#mobile = PhoneNumberField(blank=False, unique=True, region="IN")
 	mobile = models.CharField(max_length=20, null=True, blank=True)
 	mobile1 = models.CharField(max_length=20, null=True, blank=True)
@@ -50,8 +54,12 @@ class UserProfiles(models.Model):
 	latitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
 	longitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
 	#user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile")
+	section_flag = models.TextField(null=True, blank=True, default='[False, False, False]')
+	flag_count = models.IntegerField(null=True, blank=True, default=0)
 	users_id = models.IntegerField(null=True, blank=True)
 	profile_id = models.IntegerField(null=True, blank=True)
+	verification = models.IntegerField(null=True, blank=True, default=0)
+	verification_text = models.CharField(max_length=20, null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
 	created_by = models.IntegerField(null=True, blank=True)
@@ -92,6 +100,12 @@ class Address(models.Model):
 	def __str__(self):
 		return self.subject
 
+# A projected coordinate system (only valid for South Texas!)
+# is used, units are in meters.
+# class SouthTexasCity(models.Model):
+#     name = models.CharField(max_length=30)
+#     point = models.PointField(srid=32140)
+
 class UsersRegistrationCouncils(models.Model):
 	name = models.CharField(max_length=150, null=True, blank=True, default="Issues text")
 	registration_no = models.CharField(max_length=50, null=True, blank=True)
@@ -101,7 +115,8 @@ class UsersRegistrationCouncils(models.Model):
 	status = models.BooleanField(default=False)
 	#user_id = models.IntegerField(null=True, blank=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-	profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True)
+	#profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True)
+	profile_id = models.IntegerField(null=True, blank=True)
 	is_deleted = models.BooleanField(default=False)
 	created_by = models.IntegerField(null=True, blank=True)
 	updated_by = models.IntegerField(null=True, blank=True)
@@ -124,7 +139,8 @@ class UsersEducations(models.Model):
 	grade = models.IntegerField(null=True, blank=True)
 	passing_year = models.CharField(max_length=10, null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
-	user_id = models.IntegerField(null=True, blank=True)
+	#user_id = models.IntegerField(null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
@@ -159,7 +175,8 @@ class UsersClinics(models.Model):
 	image = models.FileField('image', upload_to="clinics_docs/", null=True, blank=True)
 	file = models.FileField('file', upload_to="clinics_docs/", null=True, blank=True)
 	status = models.BooleanField(default=False)
-	user_id = models.IntegerField(null=True, blank=True)
+	#user_id = models.IntegerField(null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	is_deleted = models.BooleanField(default=False)
 	created_by = models.IntegerField(null=True, blank=True)
 	updated_by = models.IntegerField(null=True, blank=True)
@@ -183,7 +200,8 @@ class UsersIdentityProofs(models.Model):
 	name = models.CharField(max_length=150, null=True, blank=True, default="univercity text")
 	identity_proof_no = models.CharField(max_length=50, null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
-	user_id = models.IntegerField(null=True, blank=True)
+	#user_id = models.IntegerField(null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
@@ -204,7 +222,8 @@ class MedicalRegistrationProofs(models.Model):
 	name = models.CharField(max_length=150, null=True, blank=True, default="univercity text")
 	identity_proof_no = models.CharField(max_length=50, null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
-	user_id = models.IntegerField(null=True, blank=True)
+	#user_id = models.IntegerField(null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
@@ -226,7 +245,8 @@ class EstablishmentProofs(models.Model):
 	identity_proof_type = models.CharField(max_length=50, null=True, blank=True, default="identity proof text")
 	identity_proof_no = models.CharField(max_length=50, null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
-	user_id = models.IntegerField(null=True, blank=True)
+	#user_id = models.IntegerField(null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
@@ -280,8 +300,8 @@ class MapLocations(models.Model):
 
 class EstablishmentTimings(models.Model):
 	name = models.CharField(max_length=50, null=True, blank=True, default="identity text")
-	start_at = models.DateTimeField(null=True, blank=True)
-	end_at = models.DateTimeField(null=True, blank=True)
+	start_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
+	end_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 	message = models.CharField(max_length=150, null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
 	user_id = models.IntegerField(null=True, blank=True)
@@ -325,6 +345,26 @@ class ConsultationFees(models.Model):
 	def __str__(self):
 		return self.name
 
+class DoctorVerifications(models.Model):
+	name = models.CharField(max_length=150, null=True, blank=True, default="Issues text")
+	message = models.TextField(null=True, blank=True)
+	issues_id = models.IntegerField(null=True, blank=True)
+	user_id = models.IntegerField(null=True, blank=True)
+	status = models.BooleanField(default=False)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "UsersIssues"
+
+	def __str__(self):
+		return self.name	
+
 ##############################################################################################
 
 class UsersIssues(models.Model):
@@ -347,6 +387,29 @@ class UsersIssues(models.Model):
 
 	def __str__(self):
 		return self.name	
+
+class UsersWorkExperiences(models.Model):
+	name = models.CharField(max_length=150, null=True, blank=True, default="org name text")
+	description = models.TextField(null=True, blank=True)
+	work_experience = models.IntegerField(null=True, blank=True)
+	doj = models.DateField(null=True, blank=True)
+	dol = models.DateField(null=True, blank=True)
+	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
+	status = models.BooleanField(default=False)
+	user_id = models.IntegerField(null=True, blank=True)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "UsersWorkExperiences"
+
+	def __str__(self):
+		return self.name
 
 class UsersSpecializations(models.Model):
 	name = models.CharField(max_length=150, null=True, blank=True, default="Issues text")
@@ -397,6 +460,10 @@ class UsersAchievements(models.Model):
 
 	def __str__(self):
 		return self.name
+
+##############################################################################################
+# PatientDocuments
+# DoctorReceipts
 
 ##############################################################################################
 
@@ -483,3 +550,20 @@ class ModelRights(models.Model):
 
 
 ##############################################################################################
+
+class ModelLanguages(models.Model):
+	code = models.CharField(max_length=10, null=False, blank=False)
+	value = models.CharField(max_length=50, null=False, blank=False)
+	description = models.TextField(null=True, blank=True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "ModelLanguages"
+
+	def __str__(self):
+		return self.name
+
+
+##############################################################################################
+

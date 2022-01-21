@@ -23,7 +23,7 @@
                   <div class="table-responsive">
                     <table id="example" class="table table-striped display expandable-table" style="width:100%">
                       <thead>
-                        <tr><th>Sr.</th><th>Photo</th><th>Name</th><th>About</th><th>Email</th><th>Mobile</th><th>Approval</th><th>Created Date</th><th>Actions</th></tr>
+                        <tr><th>Sr.</th><th>Photo</th><th>Name</th><th>Email</th><th>Mobile</th><th>Approval</th><th></th><th>Created Date</th><th>Actions</th></tr>
                       </thead>
                       <tbody>
                       	{% for item in items %}
@@ -31,23 +31,38 @@
 							<td>{{ item.id }}</td>
 							<td class="py-1"><img src='{% static "icons/doctor-icon.png" %}' alt="profile"/></td>
 							<td>{{ item.name }}</td>
-							<td>--</td>
 							<td>{{ item.email }}</td>
 							<td>{{ item.mobile }}</td>
 							<td>
 								<a href="/hospital/doctor-status/{{ item.id }}">
+									{% if item.verification == 1 %}
+									<label class="badge badge-success"> <i class="mdi mdi-marker-check"></i> Verified </label>
+									{% elif item.verification == 2 %}
+									<label class="badge badge-danger"> <i class="mdi mdi-bookmark-remove"></i> Rejected </label>
+									<!-- <label class="badge badge-warning">Pending</label>
+									<label class="badge badge-info">Documents Missing</label>
+									<label class="badge badge-warning">Under Verification!</label>
+									<label class="badge badge-danger">Rejected</label>
+									<label class="badge badge-success">Verified</label> -->
+									{% else %}
+									<label class="badge badge-warning"> <i class="mdi mdi-timer-sand"></i> Under Verification!</label>
+									{% endif %}
+								</a>
+							</td>
+							<td>
+								<!-- <a href="/hospital/doctor-status/{{ item.id }}">
 									{% if item.status == 0 %}
 									<i class="mdi mdi-toggle-switch-off btndx"></i>
 									{% else %}
 									<i class="mdi mdi-toggle-switch u-on"></i>
 									{% endif %}
-								</a>
+								</a> -->
 							</td>
-							<td>{{ item.date_joined }}</td>
+							<td>{{ item.created_at }}</td>
 							<td>
-								<a href="doctor/{{item.id}}"><i class="mdi mdi-eye btni"></i></a>
-								<a href="doctor-edit/{{item.id}}"><i class="mdi mdi-pencil btns"></i></a>
-								<a href="doctor-delete/{{item.id}}"><i class="mdi mdi-delete btnd"></i></a>
+								<a href="doctor/{{item.id}}"><i class="mdi mdi-eye btni"></i> </a>
+								<!-- <a href="doctor-edit/{{item.id}}"><i class="mdi mdi-pencil btns"></i></a>
+								<a href="doctor-delete/{{item.id}}"><i class="mdi mdi-delete btnd"></i></a> -->
 							</td>
                         </tr>
                         {% endfor %}

@@ -1,0 +1,573 @@
+{% extends "layout/master.html" %}
+
+{% block start %}
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style type="text/css">
+
+.panel-default {
+   border: solid 1px #ddd;
+}
+
+.menu_title {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    margin: 0 5px;
+}
+
+.profile-head {
+    width: 100%;
+    /*background-color: rgb(65, 105, 255);*/
+    background: #274aa7;
+    padding: 15px 0 0px 5px;
+    border-radius: 30px;
+}
+
+.profile-head img {
+    height: 180px;
+    width: 180px;
+    margin: 0 auto;
+    border: 5px solid #fff;
+    border-radius: 5px;
+}
+
+.profile-head h5 {width: 100%;padding:5px 5px 0px 5px;text-align:justify;font-weight: bold;color: #fff;font-size: 25px;text-transform:capitalize;
+margin-bottom: 0;}
+.profile-head p {width: 100%;text-align: justify;padding:0px 5px 5px 5px;color: #fff;font-size:17px;text-transform:capitalize;margin:0;}
+.profile-head a {width: 100%;text-align: center;padding: 10px 5px;color: #fff;font-size: 15px;text-transform: capitalize;}
+.profile-head ul { list-style:none;padding: 0;}
+.profile-head ul li { display:block; color:#ffffff;padding:5px;font-weight: 400;font-size: 15px;}
+.profile-head ul li:hover span { color:rgb(0, 4, 51);}
+.profile-head ul li span { color:#ffffff;padding-right: 10px;}
+.profile-head ul li a { color:#ffffff;}
+.profile-head h6 {width: 100%;text-align: center;color: #fff;font-size: 
+  15px;text-transform: uppercase;margin-bottom: 0; margin-top: 20px;
+    font-weight: 600;}
+
+
+.dct_pic{ text-align: center; }
+
+.well {
+    text-align: center;
+    min-height: 15px;
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+}
+
+.mnu_tb{}
+.mnu_tb ul{}
+.mnu_tb ul li{}
+.mnu_tb ul li a {
+    color: #000;
+    background: #e7e7e7;
+    padding: 10px 14px;
+    margin: 2px;
+    margin-top: 30px;
+    float: left;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.mnu_tb ul li a.active{ background: #274aa7; color: #fff; }
+
+.rt_tx{margin: 0 7px 0px 0px;}
+
+</style>
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="col-sm-11">
+                        <a href="/hospital/doctors" class="btn btn-primary btn-sm" style="margin-bottom: 5px;">
+                            <i class="fa fa-arrow-left rt_tx" aria-hidden="true"></i> Back
+                        </a>
+                        <div class="profile-head">
+                            <!--col-md-4 col-sm-4 col-xs-12 close-->
+                        	<div class="row">
+                            <div class="col-md- col-sm-4 col-xs-12 dct_pic">
+                              <!-- <img src="images/doctor.jpg" class="img-responsive"/> -->
+                              <img src='{% static "icons/default-img.png" %}' class="img-responsive" alt="profile"/>
+                                <h6>{{serial_no}}{{item.id}}</h6>
+                                <!-- <p>{{current_user}}</p> -->
+                            </div>
+                            <!--col-md-4 col-sm-4 col-xs-12 close-->
+                            <div class="col-md-7 col-sm-5 col-xs-12">
+                                <h5>Dr. <span style="text-transform: uppercase;"> {{item.name}}</span></h5>
+                                <ul>
+                                    <li><i class="fa fa-briefcase rt_tx"></i> 9 years</li>
+                                    <li><i class="fa fa-map-marker rt_tx"></i> India</li>
+                                    <li style="text-transform: capitalize;"><i class="fa fa-home rt_tx"></i> {{item.address}} 2<sup>th</sup> Floor, No: 37,</li>
+                                    <li><i class="fa fa-mobile rt_tx"></i> <a href="#" title="call">(+91) {{item.mobile}}</a></li>
+                                    <li><i class="fa fa-envelope-o rt_tx"></i><a href="#" title="mail">{{item.email}}</a></li>
+                                </ul>
+                            </div>
+                        	 </div>
+                        </div>
+	
+        <div data-spy="scroll" class="tabbable-panel">
+            <div class="tabbable-line">
+			
+			 <div class="mnu_tb">
+<!--
+Doctor’s basic details 
+Medical Registration 
+Education qualification 
+Work Experience 
+Establishment details 
+Address/Contact Details 
+
+-->
+ 
+                <ul class="nav nav-tabs ">
+                    <li class="active">
+                        <a href="#tab_default_0" data-toggle="tab">Sales Details</a>
+                    </li>
+                    <li>
+                        <a href="#tab_default_1" data-toggle="tab">Basic Details</a>
+                    </li>
+                    <li>
+                        <a href="#tab_default_2" data-toggle="tab">Experience & Education</a>
+                    </li>
+                    <li>
+                        <a href="#tab_default_3" data-toggle="tab">Medical Registration</a>
+                    </li>
+                    <li>
+                        <a href="#tab_default_4" data-toggle="tab">Gov. Documents</a>
+                    </li>
+                    <li>
+                        <a href="#tab_default_5" data-toggle="tab">Contact Details</a>
+                    </li>
+                    <li>
+                        <a href="#tab_default_6" data-toggle="tab">Verification</a>
+                    </li>
+                </ul>
+				
+				</div>
+
+<!-- 1. Doctor identity proof, 
+2. registration proof, 
+3. establishment ownership proof -->		
+				
+				
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_default_0">
+                        <div class="well well-sm">
+                            <h4>SALES DATA</h4>
+                        </div>
+                        <div>
+                            <div></div>
+                            <table class="table bio-table xtable">
+                                <tbody>
+                                    <tr>      
+                                        <td>Total Commission</td>
+                                        <td>: <span style="text-transform: uppercase;"> 00.00</span> </td>     
+                                        <td>Total Appointments</td>
+                                        <td>: 189 </td>       
+                                    </tr>
+                                    <tr>
+                                        <td>Patients</td>
+                                        <td style="text-transform: capitalize;">: 124 </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                   
+                                  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab_default_1">
+                        <div class="well well-sm">
+                            <h4>PERSONAL DATA</h4>
+                        </div>
+                   
+                        <table class="table bio-table xtable">
+                            <tbody>
+                                <tr>      
+                                    <td>Name</td>
+                                    <td>: Dr. <span style="text-transform: uppercase;"> {{item.name}}</span> </td> 
+                                </tr>
+                                <tr>    
+                                    <td>Date of Birthday</td>
+                                    <td>: {{item.dob}}</td>       
+                                    <td>Gender</td>
+                                    <td style="text-transform: capitalize;">: {{item.sex}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mobile</td>
+                                    <td>: {{item.mobile}}</td>
+                                    <td>Email</td>
+                                    <td>: {{ item.email|default_if_none:"" }}</td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        <div class="well well-sm">
+                            <h4 style="text-transform: uppercase;">Consultation FEE</h4>
+                        </div>
+                   
+                        <table class="table bio-table xtable">
+                            <tbody>
+                                <tr>      
+                                    <td>Consultation Fee </td>
+                                    <td>: {{consultationfee.amount|default_if_none:'00.00'}} </td> 
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                
+                <div class="tab-pane" id="tab_default_2">
+                    <div class="well well-sm">
+                        <h4 style="text-transform: uppercase;">WORK Experience</h4>
+                    </div>
+                   
+                    <table class="table bio-table">
+                        <head>
+                            <tr>
+                                <th>Hospital/Clinic</th><th>Experience</th><th>Years</th>
+                            </tr>
+                        </head>
+                        <tbody>
+                             <tr>
+                                <td>Nehru Homoeopathic Medical College and Hospital</td>
+                                <td>--</td>
+                                <td>3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="well well-sm">
+                        <h4>EDUCATIONAL BACKGROUND</h4>
+                    </div>
+                   
+                    <table class="table bio-table">
+                        <head>
+                            <tr>
+                                <th>Degeer</th><th>University/College</th><th>Year</th>
+                            </tr>
+                        </head>
+                        <tbody>
+                             <tr>
+                                <td>BHMS</td>
+                                <td>Nehru Homoeopathic Medical College and Hospital</td>
+                                <td>2002</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-pane" id="tab_default_3">
+                    <div class="well well-sm">
+                        <h4 style="text-transform: uppercase;">Medical Registration</h4>
+                    </div>
+                    <table class="table bio-table">
+                        <tbody>
+                            <tr>
+                                <td>151000CCAV</td>
+                                <td>Medical Registration</td>
+                                <td>MedicalRegistration.pfd</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-pane" id="tab_default_4"  style="border: 1px solid lightgray;">
+                    <div class="well well-sm">
+                        <h4 style="text-transform: uppercase;">government documents list</h4>
+                    </div>
+                   
+                    <table class="table bio-table">
+                        <tbody>
+                            
+                            {% for idproof in identityproof %}
+                            <tr>
+                                <td>Gov. Identity Proof</td>
+                                <td>: 
+                                    {% if idproof.file %}
+                                        <img src='/media/{{idproof.file}}' alt="profile" id="blah" class="profile-avatar treatment-avatar" style="width: 130px;height: auto;" />
+                                        <br><br>
+                                        <a href="/media/{{idproof.file}}" class="btn btn-sm btn-primary" target="_blank">view</a>
+                                    {% else %}
+                                        <img src='{% static "icons/default-img.png" %}' alt="profile" id="blah" class="profile-avatar treatment-avatar" style="width: 130px;height: auto;"/>
+                                    {% endif %}
+                                    <!-- <br><br>
+                                    {{ idproof.file|default_if_none:"No Record" }} -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Medical Registration Proof</td>
+                                <td>: {{ idproof.name|default_if_none:"" }}</td>
+                            </tr>
+                            <tr>
+                                <td>Establishment & Ownership Proof</td>
+                                <td>: {{ idproof.name|default_if_none:"" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-pane" id="tab_default_5" style="border: 1px solid lightgray;">
+                    <div class="well well-sm">
+                        <h4 style="text-transform: uppercase;">Contact & ADDRESS DETAILS</h4>
+                        <!-- Clinic Address
+                        Present Residential Address
+                        Permanent Residential Address -->
+                    </div>
+                   
+                    <table class="table bio-table">
+                        <!-- <thead>
+                            <tr>
+                                <th colspan="2">Clinic Address</th>
+                            </tr>
+                        </thead> -->
+                        <tbody>
+                            <tr>
+                                <td>Mobile No:</td>
+                                <td>{{item.mobile}}</td>
+                                <td>Email:</td>
+                                <td>{{item.email}}</td>
+                            </tr>
+                            <tr>
+                                <td>Clinic Address:</td>
+                                <td colspan="3">{{item.address}}</td>
+                            </tr>
+                            <tr>
+                                <td>City:</td>
+                                <td>XXX</td>
+                                <td>State:</td>
+                                <td>XXX</td>
+                            </tr>
+                            <tr>
+                                <td>Country:</td>
+                                <td>XXX</td>
+                                <td>Pin code:</td>
+                                <td>XXX</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                
+                <div class="tab-pane" id="tab_default_6"  style="border: 1px solid lightgray;">
+                    <div class="well well-sm">
+                        <h4>Verification</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-md-offset-0 md-2" style="padding: 1% 10%;">
+                            <form id="formElement" class="form-sample" method="POST" action="/hospital/doctor/docto-verification" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{item.id}}">
+                            <input type="hidden" name="user_id" value="{{item.users_id}}">
+                            <input type="hidden" id="name_id" name="name" value="">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                  <div class="form-group">
+                                    <label for="exampleInputName1">About Verification:</label>
+                                    <textarea class="form-control" name="message" id="exampleInputName1" placeholder="Type here..." required></textarea>
+                                  </div>
+                                </div>
+                            </div><br>
+                            <button type="submit" class="btn btn-warning mb-2" id="Recheck" onclick="doWithThisElement(this)">Recheck</button>
+                            <button type="submit" class="btn btn-primary mb-2" id="Aprooved" onclick="doWithThisElement(this)">Aprooved</button>
+                            <button type="submit" class="btn btn-danger mb-2" id="Reject" onclick="doWithThisElement(this)">Reject</button>
+
+                            <!-- <button type="button" class="btn btn-danger mb-2" id="Reject" data-toggle="modal" data-target="#myModalVerification" data-backdrop="static" data-keyboard="false">Reject</button> -->
+                          </form>
+                        </div><!-- /.col-lg-12 -->
+                        <div class="col-md-12 col-md-offset-0 md-2" style="padding: 1% 10%;">
+                            <h4>Verification logs:</h4>
+
+                                <table class="table">
+                                    {% for verification in verifications %}
+                                    <tr>
+                                        <td>&bull; Doctor's profile have update as 
+                                                {% if verification.name == 'Aprooved' %}
+                                                <span style="background-color: green;">
+                                                {% else %}
+                                                <span style="background-color: yellow;">
+                                                {% endif %}
+                                                {{ verification.name }}
+                                            </span> &nbsp;&nbsp;that,&nbsp;&nbsp; {{verification.message}}
+                                        </td>
+                                        <td> &nbsp;at&nbsp;&nbsp; {{ verification.created_at }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                        </div>
+                    </div><!-- /.row -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+                    </div>
+                </div>
+            </div>	 
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ===================================== -->
+
+<!-- Modal Doctor's Registration -->
+  <div class="modal fade" id="myModalVerification" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h4 class="modal-title">Doctor's Registration</h4>
+          <p style="color: red;">Do You Want To Rejected ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-sm btn-danger">Rejected</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Doctor's Registration</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          
+        </div>
+        <div class="modal-body">
+          <p style="color: red;">Do You Want To Rejected ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-sm btn-info">Rejected</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+<!-- ===================================== -->
+
+<script type="text/javascript">
+    function doWithThisElement(e) {
+      /*const formData = new FormData(e);
+      for (var value of formData.values()) {
+          console.log(value);
+          return true;
+      }*/
+      var name = e.id;
+      document.getElementById("name_id").value = name;
+      /*document.getElementById("demo").innerHTML = "Hello World";*/
+      /*alert(name);*/
+    }
+    
+</script>
+
+<script type="text/javascript">
+  //tab js//
+$(document).ready(function(e) {
+    
+
+$('.form').find('input, textarea').on('keyup blur focus', function (e) {
+  
+  var $this = $(this),
+      label = $this.prev('label');
+
+      if (e.type === 'keyup') {
+    		if ($this.val() === '') {
+          label.removeClass('active highlight');
+        } else {
+          label.addClass('active highlight');
+        }
+    } else if (e.type === 'blur') {
+    	if( $this.val() === '' ) {
+    		label.removeClass('active highlight'); 
+			} else {
+		    label.removeClass('highlight');   
+			}   
+    } else if (e.type === 'focus') {
+      
+      if( $this.val() === '' ) {
+    		label.removeClass('highlight'); 
+			} 
+      else if( $this.val() !== '' ) {
+		    label.addClass('highlight');
+			}
+    }
+
+});
+
+$('.tab a').on('click', function (e) {
+  
+  e.preventDefault();
+  
+  $(this).parent().addClass('active');
+  $(this).parent().siblings().removeClass('active');
+  target = $(this).attr('href');
+
+  $('.tab-content > div').not(target).hide();
+  
+  $(target).fadeIn(600);
+  
+});
+//canvas off js//
+$('#menu_icon').click(function(){
+		if($("#content_details").hasClass('drop_menu'))
+		{
+        $("#content_details").addClass('drop_menu1').removeClass('drop_menu');
+    }
+		else{
+			$("#content_details").addClass('drop_menu').removeClass('drop_menu1');
+			}
+	
+	
+	});
+	
+//search box js//
+
+
+    $("#flip").click(function(){
+        $("#panel").slideToggle("5000");
+    });
+
+// sticky js//
+
+$(window).scroll(function(){
+    if ($(window).scrollTop() >= 500) {
+       $('nav').addClass('stick');
+    }
+    else {
+       $('nav').removeClass('stick');
+    }
+});
+
+
+
+
+});
+  
+  </script>
+  
+  
+{% endblock start %}

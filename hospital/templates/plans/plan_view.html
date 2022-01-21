@@ -9,7 +9,9 @@
               	<div class="card-header" style="border-radius: inherit;">
               		<div class="row">
 	              		<div class="col-sm-4 col-md-4 col-lg-4">
-	              			<a href="/hospital/plans" class="btn btn-outline-primary btn-sm">Back</a>
+                      <a href="/hospital/plans" class="btn btn-primary btn-sm" style="margin-bottom: 5px;">
+                            <i class="mdi mdi-arrow-left-bold" aria-hidden="true"> Back</i> 
+                        </a>
 	              		</div>
 	              		<div class="col-sm-4 col-md-4 col-lg-4">
 	              			<h4 class="card-title"> Plan Details</h4>
@@ -40,6 +42,8 @@
                                 <tr>
                                   <td style="width: 25%;">Plan Name:</td><td>{{item.name}}</td>
                                 </tr>
+                                <tr><td>Plan Amount</td><td>{{item.amount}}</td></tr>
+                                <tr><td>Plan Expiry (in months)</td><td>{{item.expiry_in_months}}</td></tr>
                                 <tr>
                                   <td>Plan description:</td><td>{{item.description}}</td>
                                 </tr>

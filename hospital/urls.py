@@ -1,8 +1,19 @@
 from django.contrib import admin
 from django.urls import path
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
+from django.test import SimpleTestCase, override_settings
 from . import views
 
+def response_error_handler(request, exception=None):
+    return HttpResponse('Error handler content', status=403)
+
+def permission_denied_view(request):
+    raise PermissionDenied
+
 urlpatterns = [
+    path('403/', permission_denied_view),
+    #################################################################
     path('', views.index, name ='hospital'),
     path('dashborad', views.dashboard, name ='hospital-dashborad'),
     path('send-mail', views.sendMail, name ='hospital-sendmail'),
@@ -21,6 +32,7 @@ urlpatterns = [
     path('doctor-edit/<int:id>', views.getDoctorEdit, name ='doctor-edit'),
     path('doctor-update/<int:id>', views.postDoctorUpdate, name ='doctor-update'),
     path('doctor-delete/<int:id>', views.getDoctorDelete, name ='doctor-delete'),
+    path('doctor/docto-verification', views.getDoctoVerification, name ='doctor/docto-verification'),
     ############ Doctor #####################################################
     path('categories', views.getCategories, name ='categories'),
     path('subcategories', views.getSubCategories, name ='subcategories'),
@@ -113,3 +125,25 @@ urlpatterns = [
     ############ End #####################################################
 
 ]
+
+
+handler403 = response_error_handler
+
+# #The page_not_found() view is overridden by handler404:
+# handler404 = 'mysite.views.my_custom_page_not_found_view'
+# #The server_error() view is overridden by handler500:
+# handler500 = 'mysite.views.my_custom_error_view'
+# #The permission_denied() view is overridden by handler403:
+# handler403x = 'mysite.views.my_custom_permission_denied_view'
+# #The bad_request() view is overridden by handler400:
+# handler400 = 'mysite.views.my_custom_bad_request_view'
+
+# ROOT_URLCONF must specify the module that contains handler403 = ...
+@override_settings(ROOT_URLCONF=__name__)
+class CustomErrorHandlerTests(SimpleTestCase):
+
+    def test_handler_renders_template_response(self):
+        response = self.client.get('/403/')
+        # Make assertions on the response here. For example:
+        self.assertContains(response, 'Error handler content', status_code=403)
+

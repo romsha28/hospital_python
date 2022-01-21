@@ -34,6 +34,7 @@ router.register(r'masters', views.ApisMasterView, 'master')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('verify/', include('verification.urls')),
     url(r'^', include('apimaster.urls')),
     #path('', include('website.urls')),
     path('hospital/', include('hospital.urls')),
