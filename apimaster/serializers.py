@@ -19,15 +19,54 @@ from django.utils.translation import ugettext_lazy as _
 
 User = get_user_model()
 
-class getSpecialtySerializer(serializers.ModelSerializer):
+class getSubscriptionPlansSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Treatments
-        fields = ('id', 'name', 'description', 'primary_image')
+        model = SubscriptionPlans
+        fields = ('id', 'name', 'amount', 'expiry_in_months', 'primary_image', 'created_by',)
 
 class getHealthIssuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TreatmentCategories
         fields = ('id', 'name', 'description', 'primary_image', 'treatment_id')
+
+class getSpecialtySerializer(serializers.ModelSerializer):
+    #categories = getHealthIssuesSerializer(many=True, read_only=True)
+    class Meta:
+        model = Treatments
+        fields = ('id', 'name', 'description', 'primary_image')
+
+####################
+class getTreatmentCategorieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TreatmentCategories
+        fields = ('id', 'name', 'description', 'primary_image',)
+
+
+class getTreatmentSerializer(serializers.ModelSerializer):
+    categories = getTreatmentCategorieSerializer(many=True, read_only=True)
+    class Meta:
+        model = Treatments
+        fields = ('id', 'name', 'description', 'primary_image', 'categories')
+
+class ChildSerializer(ModelSerializer):
+    class Meta:
+        model = TreatmentCategories
+        fields = '__all__'
+
+
+class ParentSerializer(ModelSerializer):
+    #child = serializers.ListField(read_only=True, child=ChildSerializer())
+    categories = ChildSerializer(many=True, read_only=True)
+    class Meta:
+        model = Treatments
+        fields = '__all__'
+
+##################################
+# class StyleSerializer(serializers.ModelSerializer):
+#     colors = StyleColorSerializer(source='stylecolor_set', many=True, read_only=True)
+#     class Meta:
+#         model = Style
+#         fields = ('name', 'colors')
 
 class UserProfilesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,6 +118,15 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ('id', 'subject','address','city','state','country','pincode','latitude_coordinate','longitude_coordinate')
+
+class TreatmentWiseDoctorsSerializer(serializers.ModelSerializer):
+    #treatment = getSpecialtySerializer(source='stylecolor_set', many=True, read_only=True)
+    #treatment = getSpecialtySerializer(many=True, read_only=True)
+    f_dict = {}
+    class Meta:
+        model = UserProfiles
+        fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation", "about", "work_experience", "description", "specialties", "specialty_id", "language", "blood_group", "locality", "address", "address2", "city", "state", "country", "pincode", "latitude_coordinate", "longitude_coordinate", "verification", "verification_text", "created_by", "created_at", "status")
+
 
 
 #########################################################################################################################

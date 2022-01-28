@@ -1,4 +1,4 @@
-{% extends "user/index.html" %}
+{% extends "user/layout_login.html" %}
 {% load crispy_forms_tags %}
 {% block start %}
 
@@ -9,22 +9,22 @@
             <div class="auth-form-light text-left py-5 px-4 px-sm-5">
               <div class="brand-logo">
                 {% load static %}
-                <img src='{% static "icons/icon.png" %}' alt="logo" style="width: 25px;">
+                <img src='{% static "icons/icon.png" %}' alt="logo" style="width: 250px;">
               </div>
-              <h4>Hello! let's get started</h4>
-              <h6 class="font-weight-light">Sign in to continue.</h6>
+              <!-- <h4>Hello! let's get started</h4>
+              <h6 class="font-weight-light">Sign in to continue.</h6> -->
               
-              <form class="pt-3" method="POST" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;">
+              <form class="pt-3" method="POST" style="border: 0.1px solid gray; margin: 4%; padding:10%; border-radius:10px;">
               {% csrf_token %}
 
                 <fieldset class="form-group">
                   {{ form|crispy}}
                 </fieldset>
                <center>
-                <button style="background: black; font-size: 2rem; padding:1%;" class="btn btn-outline-info" type="submit"><span class="glyphicon glyphicon-log-in"></span> &nbsp; login</button>
+                <button type="submit" style="" class="btn btn-info" ><span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign in </button>
               </center>
-              <br/>
-              <sub style="text-align: left;"><a href="{% url 'register' %}" style="text-decoration: none; color: blue; padding:2%; cursor:pointer; margin-right:2%;">don't have account,sign up</a></sub>
+              <!-- <br/>
+              <sub style="text-align: left;"><a href="{% url 'register' %}" style="text-decoration: none; color: blue; padding:2%; cursor:pointer; margin-right:2%;">don't have account,sign up</a></sub> -->
 
                <!--  -->
               </form>

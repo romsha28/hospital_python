@@ -1,0 +1,90 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- <title>Admin</title> -->
+  <title>{{title}}</title>
+  <!-- plugins:css -->
+  <!-- <link href='{% static "assets/bootstrap/css/bootstrap.min.css" %}' rel="stylesheet"> -->
+  <link rel="stylesheet" href='{% static "admin/vendors/feather/feather.css" %}'>
+  <link rel="stylesheet" href='{% static "admin/vendors/ti-icons/css/themify-icons.css" %}'>
+  <link rel="stylesheet" href='{% static "admin/vendors/css/vendor.bundle.base.css" %}'>
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href='{% static "admin/vendors/datatables.net-bs4/dataTables.bootstrap4.css" %}'>
+  <link rel="stylesheet" href='{% static "admin/vendors/ti-icons/css/themify-icons.css" %}'>
+  <link rel="stylesheet" type="text/css" href='{% static "admin/js/select.dataTables.min.css" %}'>
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href='{% static "admin/css/vertical-layout-light/style.css" %}'>
+  <!-- endinject -->
+  <link rel="shortcut icon" href='{% static "icons/icon.png" %}'/>
+  <!-- bootstrap file -->
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+  <!-- bootstrap file-->
+  <!-- jQuery -->
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  <!-- message here -->
+
+  {% if messages %}
+    {% for message in messages %}
+      <script>
+        //alert("{{ message }}");
+      </script>
+    {% endfor %}
+  {% endif %}
+
+<style>
+body  {
+  background-image: url("/static/images/home.jpeg");
+  background-color: #cccccc;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container-scroller">
+
+
+ 
+
+
+
+     <div class="row">
+
+      <div class="col-lg-12 col-md-12">
+      {% block start %}
+      {% if user.is_authenticated %}
+      <center><h1 style="text-align: center;margin-top: 15%;">welcome back {{user.username}}!</h1></center>
+      {% else %}
+      <center>
+        <h1 style="text-align: center;margin-top: 15%;">log in Admin Panel, here . . .</h1>
+        <a href='{% url "login" %}' class="btn btn-sm btn-success"><i class="ti-power-off"></i> log-in </a>
+      </center>
+      {% endif %}
+      {% endblock %}
+      </div>
+    </div>
+  </div>
+
+ <!--  <script src='{% static "admin/vendors/js/vendor.bundle.base.js" %}'></script>
+  <script src='{% static "admin/js/off-canvas.js" %}'></script>
+  <script src='{% static "admin/js/hoverable-collapse.js" %}'></script>
+  <script src='{% static "admin/js/template.js" %}'></script>
+  <script src='{% static "admin/js/settings.js" %}'></script>
+  <script src='{% static "admin/js/todolist.js" %}'></script> -->
+
+</body>
+
+</html>

@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse, json
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-#import json
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
@@ -33,6 +32,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
+# from geopy.geocoders import Nominatim
+# import geocoder
+
+
 # from .serializers import UserSerializer, RegisterSerializer, UserProfilesSerializer, DoctorCouncilSerializer, LoginSerializers
 # from .models import UserProfiles
 # from rest_framework import *
@@ -54,6 +57,577 @@ from rest_framework.decorators import api_view, permission_classes
 #             raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
 
 #         return (token.user, token)
+
+
+
+@api_view(['GET'])
+def getSubscriptionPlans(request):
+    try:
+        response = {
+            "language": [
+                {
+                    "code": "en",
+                    "name": "english"
+                },
+                {
+                    "code": "sa",
+                    "name": "Soudi Arabia"
+                },
+                {
+                    "code": "bd",
+                    "name": "Bangla"
+                },
+                {
+                    "code": "in",
+                    "name": "Hindi"
+                }
+            ],
+            'status' : status.HTTP_200_OK
+        }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def getPlans(request):
+    if request.method == 'GET':
+        items = SubscriptionPlans.objects.all()
+        if items is not None:
+            data_serializer = getSubscriptionPlansSerializer(items, many=True)
+            return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getProducts(request):
+    try:
+        response = {
+                "data": [
+                    {
+                        "id": 1,
+                        "name": "Covid Essentials",
+                        "description": "Essentials",
+                        "photo": "/media/products_photo/1.png",
+                    },
+                    {
+                        "id": 2,
+                        "name": "Medical Devices",
+                        "description": "Devices",
+                        "photo": "/media/products_photo/2.png",
+                    },
+                    {
+                        "id": 3,
+                        "name": "Nutrition & Fitness",
+                        "description": "Nutrition & Fitness",
+                        "photo": "/media/products_photo/3.png",
+                    }
+                ],
+                "message": "get successfully!",
+                "status": status.HTTP_200_OK
+            }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def getBannerHome(request):
+    try:
+        response = {
+                "data": [
+                    {
+                        "id": 1,
+                        "name": "banner-1",
+                        "photo": "/media/banners_photo/banner_1.png",
+                    },
+                    {
+                        "id": 2,
+                        "name": "banner-2",
+                        "photo": "/media/banners_photo/banner_1.png",
+                    },
+                    {
+                        "id": 3,
+                        "name": "banner-3",
+                        "photo": "/media/banners_photo/banner_1.png",
+                    }
+                ],
+                "message": "get successfully!",
+                "status": status.HTTP_200_OK
+            }
+        return JsonResponse(response, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def postRecommendedDoctors(request):
+    try:
+        response = {
+                "doctorslist": [
+                    {
+                        "id": 1,
+                        "name": "dash kamal",
+                        "mobile": "9846584616",
+                        "email": "dashkamal@mailinator.com",
+                        "photo": "/media/profile_photo/image_Wn6BFli.png",
+                        "sex": "male",
+                        "dob": "2021-11-10",
+                        "occupation": "doctor",
+                        "about": "",
+                        "work_experience": None,
+                        "description": "update base64 image 2021-12-29 15:58:18",
+                        "specialties": None,
+                        "specialty_id": 1,
+                        "language": None,
+                        "blood_group": "",
+                        "locality": "",
+                        "address": "noida",
+                        "address2": "",
+                        "city": "",
+                        "state": "",
+                        "country": "",
+                        "pincode": None,
+                        "latitude_coordinate": "",
+                        "longitude_coordinate": "",
+                        "verification": 1,
+                        "verification_text": "Aprooved",
+                        "created_by": None,
+                        "created_at": "2021-11-29T17:49:31.472602+05:30",
+                        "status": True,
+                        "treatmentdata": [
+                            {
+                                "id": 1,
+                                "name": "General Medicine",
+                                "description": "General Medicine",
+                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 19,
+                        "name": "yogi4",
+                        "mobile": None,
+                        "email": "yogi4@mailinator.com",
+                        "photo": None,
+                        "sex": "male",
+                        "dob": None,
+                        "occupation": "doctor",
+                        "about": None,
+                        "work_experience": None,
+                        "description": None,
+                        "specialties": None,
+                        "specialty_id": 1,
+                        "language": None,
+                        "blood_group": None,
+                        "locality": None,
+                        "address": None,
+                        "address2": None,
+                        "city": None,
+                        "state": None,
+                        "country": None,
+                        "pincode": None,
+                        "latitude_coordinate": None,
+                        "longitude_coordinate": None,
+                        "verification": 1,
+                        "verification_text": "Aprooved",
+                        "created_by": None,
+                        "created_at": "2021-12-12T20:53:42.382056+05:30",
+                        "status": True,
+                        "treatmentdata": [
+                            {
+                                "id": 2,
+                                "name": "General Surgery",
+                                "description": "General Surgery",
+                                "primary_image": "/media/treatments/WomanHealth.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 20,
+                        "name": "yogi to 102",
+                        "mobile": None,
+                        "email": "yogi6@mailinator.com",
+                        "photo": "/media/profile_photo/20723-2-mario-image_pcRTCQ0.png",
+                        "sex": "male",
+                        "dob": None,
+                        "occupation": "doctor",
+                        "about": None,
+                        "work_experience": None,
+                        "description": "demo description",
+                        "specialties": None,
+                        "specialty_id": 1,
+                        "language": None,
+                        "blood_group": None,
+                        "locality": None,
+                        "address": None,
+                        "address2": None,
+                        "city": None,
+                        "state": None,
+                        "country": None,
+                        "pincode": None,
+                        "latitude_coordinate": None,
+                        "longitude_coordinate": None,
+                        "verification": 2,
+                        "verification_text": "Rejected",
+                        "created_by": None,
+                        "created_at": "2021-12-12T20:57:44.296325+05:30",
+                        "status": False,
+                        "treatmentdata": [
+                            {
+                                "id": 1,
+                                "name": "General Medicine",
+                                "description": "General Medicine",
+                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
+                            },
+                            {
+                                "id": 2,
+                                "name": "General Surgery",
+                                "description": "General Surgery",
+                                "primary_image": "/media/treatments/WomanHealth.jpg"
+                            },
+                            {
+                                "id": 3,
+                                "name": "Psychiatry",
+                                "description": None,
+                                "primary_image": None
+                            },
+                            {
+                                "id": 4,
+                                "name": "General Physician",
+                                "description": None,
+                                "primary_image": None
+                            }
+                        ]
+                    },
+                    {
+                        "id": 31,
+                        "name": "yogi to 121",
+                        "mobile": None,
+                        "email": None,
+                        "photo": "/media/profile_photo/image_lKCsLDD.png",
+                        "sex": "male",
+                        "dob": None,
+                        "occupation": "doctor",
+                        "about": None,
+                        "work_experience": None,
+                        "description": "update base64 image 2022-01-21 12:19:08",
+                        "specialties": None,
+                        "specialty_id": None,
+                        "language": "['ab', 'en']",
+                        "blood_group": None,
+                        "locality": None,
+                        "address": None,
+                        "address2": None,
+                        "city": None,
+                        "state": None,
+                        "country": None,
+                        "pincode": None,
+                        "latitude_coordinate": None,
+                        "longitude_coordinate": None,
+                        "verification": 0,
+                        "verification_text": None,
+                        "created_by": None,
+                        "created_at": "2021-12-29T22:30:58.906327+05:30",
+                        "status": False,
+                        "treatmentdata": [
+                            {
+                                "id": 1,
+                                "name": "General Medicine",
+                                "description": "General Medicine",
+                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
+                            },
+                            {
+                                "id": 2,
+                                "name": "General Surgery",
+                                "description": "General Surgery",
+                                "primary_image": "/media/treatments/WomanHealth.jpg"
+                            },
+                            {
+                                "id": 3,
+                                "name": "Psychiatry",
+                                "description": None,
+                                "primary_image": None
+                            },
+                            {
+                                "id": 4,
+                                "name": "General Physician",
+                                "description": None,
+                                "primary_image": None
+                            }
+                        ]
+                    }
+                ],
+                "message": "get successfully!",
+                "status": status.HTTP_200_OK
+            }
+        # 'status' : status.HTTP_200_OK
+        # dataJSON = dumps(response)
+        # dataJSON = json.dumps(response)
+        # dataJSON = json.loads(response)
+        return JsonResponse(response, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def postTreatmentWiseDoctorsTest(request):
+    try:
+        response = {
+                "doctorslist": [
+                    {
+                        "id": 44,
+                        "name": "yogi to 121",
+                        "mobile": "9846584616",
+                        "email": "dashkamal@mailinator.com",
+                        "photo": "/media/profile_photo/image_Wn6BFli.png",
+                        "sex": "male",
+                        "dob": "2021-11-10",
+                        "occupation": "doctor",
+                        "about": "",
+                        "work_experience": None,
+                        "description": "update base64 image 2021-12-29 15:58:18",
+                        "specialties": None,
+                        "specialty_id": 1,
+                        "language": None,
+                        "blood_group": "",
+                        "locality": "",
+                        "address": "noida",
+                        "address2": "",
+                        "city": "",
+                        "state": "",
+                        "country": "",
+                        "pincode": None,
+                        "latitude_coordinate": "",
+                        "longitude_coordinate": "",
+                        "verification": 1,
+                        "verification_text": "Aprooved",
+                        "created_by": None,
+                        "created_at": "2021-11-29T17:49:31.472602+05:30",
+                        "status": True,
+                        "treatmentdata": [
+                            {
+                                "id": 1,
+                                "name": "General Medicine",
+                                "description": "General Medicine",
+                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 19,
+                        "name": "yogi4",
+                        "mobile": None,
+                        "email": "yogi4@mailinator.com",
+                        "photo": None,
+                        "sex": "male",
+                        "dob": None,
+                        "occupation": "doctor",
+                        "about": None,
+                        "work_experience": None,
+                        "description": None,
+                        "specialties": None,
+                        "specialty_id": 1,
+                        "language": None,
+                        "blood_group": None,
+                        "locality": None,
+                        "address": None,
+                        "address2": None,
+                        "city": None,
+                        "state": None,
+                        "country": None,
+                        "pincode": None,
+                        "latitude_coordinate": None,
+                        "longitude_coordinate": None,
+                        "verification": 1,
+                        "verification_text": "Aprooved",
+                        "created_by": None,
+                        "created_at": "2021-12-12T20:53:42.382056+05:30",
+                        "status": True,
+                        "treatmentdata": [
+                            {
+                                "id": 2,
+                                "name": "General Surgery",
+                                "description": "General Surgery",
+                                "primary_image": "/media/treatments/WomanHealth.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 20,
+                        "name": "yogi to 102",
+                        "mobile": None,
+                        "email": "yogi6@mailinator.com",
+                        "photo": "/media/profile_photo/20723-2-mario-image_pcRTCQ0.png",
+                        "sex": "male",
+                        "dob": None,
+                        "occupation": "doctor",
+                        "about": None,
+                        "work_experience": None,
+                        "description": "demo description",
+                        "specialties": None,
+                        "specialty_id": 1,
+                        "language": None,
+                        "blood_group": None,
+                        "locality": None,
+                        "address": None,
+                        "address2": None,
+                        "city": None,
+                        "state": None,
+                        "country": None,
+                        "pincode": None,
+                        "latitude_coordinate": None,
+                        "longitude_coordinate": None,
+                        "verification": 2,
+                        "verification_text": "Rejected",
+                        "created_by": None,
+                        "created_at": "2021-12-12T20:57:44.296325+05:30",
+                        "status": False,
+                        "treatmentdata": [
+                            {
+                                "id": 1,
+                                "name": "General Medicine",
+                                "description": "General Medicine",
+                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
+                            },
+                            {
+                                "id": 2,
+                                "name": "General Surgery",
+                                "description": "General Surgery",
+                                "primary_image": "/media/treatments/WomanHealth.jpg"
+                            },
+                            {
+                                "id": 3,
+                                "name": "Psychiatry",
+                                "description": None,
+                                "primary_image": None
+                            },
+                            {
+                                "id": 4,
+                                "name": "General Physician",
+                                "description": None,
+                                "primary_image": None
+                            }
+                        ]
+                    },
+                    {
+                        "id": 31,
+                        "name": "yogi to 121",
+                        "mobile": None,
+                        "email": None,
+                        "photo": "/media/profile_photo/image_lKCsLDD.png",
+                        "sex": "male",
+                        "dob": None,
+                        "occupation": "doctor",
+                        "about": None,
+                        "work_experience": None,
+                        "description": "update base64 image 2022-01-21 12:19:08",
+                        "specialties": None,
+                        "specialty_id": None,
+                        "language": "['ab', 'en']",
+                        "blood_group": None,
+                        "locality": None,
+                        "address": None,
+                        "address2": None,
+                        "city": None,
+                        "state": None,
+                        "country": None,
+                        "pincode": None,
+                        "latitude_coordinate": None,
+                        "longitude_coordinate": None,
+                        "verification": 0,
+                        "verification_text": None,
+                        "created_by": None,
+                        "created_at": "2021-12-29T22:30:58.906327+05:30",
+                        "status": False,
+                        "treatmentdata": [
+                            {
+                                "id": 1,
+                                "name": "General Medicine",
+                                "description": "General Medicine",
+                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
+                            },
+                            {
+                                "id": 2,
+                                "name": "General Surgery",
+                                "description": "General Surgery",
+                                "primary_image": "/media/treatments/WomanHealth.jpg"
+                            },
+                            {
+                                "id": 3,
+                                "name": "Psychiatry",
+                                "description": None,
+                                "primary_image": None
+                            },
+                            {
+                                "id": 4,
+                                "name": "General Physician",
+                                "description": None,
+                                "primary_image": None
+                            }
+                        ]
+                    }
+                ],
+                "message": "get successfully!",
+                "status": status.HTTP_200_OK
+            }
+        # 'status' : status.HTTP_200_OK
+        # dataJSON = dumps(response)
+        # dataJSON = json.dumps(response)
+        # dataJSON = json.loads(response)
+        return JsonResponse(response, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+class getMultiData(generics.ListCreateAPIView):
+    def get(self, request):
+        serializer_class = ParentSerializer
+        queryset = Treatments.objects.all()
+        return Response({'data': queryset, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def getMultiDatax(request):
+    if request.method == 'POST':
+        # treatment = Treatments.objects.get(id=5)
+        # treatmentcat = treatment.treatmentCategories_set.all()
+        # Treatments , TreatmentCategories
+        items = Treatments.objects.all()
+        #items = TreatmentCategories.objects.all() 
+        if items is not None:
+            # getTreatmentSerializer , getTreatmentCategorieSerializer
+            data_serializer = ParentSerializer(items, many=True)
+            return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getUserLocation(request):
+    # Latitude & Longitude input
+    Latitude = "25.594095"
+    Longitude = "85.137566"
+    geolocator = Nominatim(user_agent="geoapiExercises")
+    location = geolocator.reverse(Latitude+","+Longitude)
+    # print(location) # Display
+    # content = {'location':str(location.city),'message': 'done'}
+    
+    address = location.raw['address']
+    print(address)
+    print(address['city'])
+    g = geocoder.ip('me')
+    print(g.latlng)
+    content = {
+        "city": address.get('city', ''),
+        "county": address.get('county', ''),
+        "state_district": address.get('state_district', ''),
+        "state": address.get('state', ''),
+        "postcode": address.get('postcode'),
+        "country": address.get('country', ''),
+        "country_code": address.get('country_code'),
+        "status":200
+    }
+    #return Response("done")
+    #return Response({"address":address})
+    return Response({"data":content})
 
 #@csrf_exempt
 @api_view(['GET'])
@@ -306,9 +880,10 @@ def profile_list(request):
             return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
     return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
+@api_view(['POST'])
 def doctors_list(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
+        #specialties = request.data.get('specialties')
         items = UserProfiles.objects.filter(occupation='doctor')
         if items is not None:
             data_serializer = UserProfilesSerializer(items, many=True)
@@ -318,9 +893,24 @@ def doctors_list(request):
             return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def postTreatmentWiseDoctors(request):
+    if request.method == 'POST':
+        #specialties = request.data.get('specialties')
+        items = UserProfiles.objects.filter(occupation='doctor')
+        if items is not None:
+            data_serializer = TreatmentWiseDoctorsSerializer(items, many=True)
+            data = data_serializer.data
+            data[1] = 'male'
+            #data['gender'] = 'male'
+            return Response({'doctorslist': data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            #return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def getDoctors(request, pk):
+def getDoctorsx(request, pk):
     if request.method == 'GET':
         users = UserProfiles.objects.filter(occupation='doctor',specialty_id=pk)
         if users:
@@ -329,6 +919,257 @@ def getDoctors(request, pk):
         else:
             return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
     return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET','POST'])
+def getDoctors(request, pk):
+    try:
+        user = UserProfiles.objects.get(users_id=pk)
+        if user.occupation == "doctor":
+            council = UsersRegistrationCouncils.objects.get(user_id=pk)
+            education = UsersEducations.objects.get(user_id=pk)
+            clinic = UsersClinics.objects.get(user_id=pk)
+            IdentityProof = UsersIdentityProofs.objects.get(user_id=pk)
+            Registration = MedicalRegistrationProofs.objects.get(user_id=pk)
+            Establishment = EstablishmentProofs.objects.get(user_id=pk)
+            MapLocation = MapLocations.objects.get(user_id=pk)
+            #EstablishmentTimings = EstablishmentTimings.objects.get(user_id=pk)
+            ConsultationFee = ConsultationFees.objects.get(user_id=pk)        
+            response = {
+                    'data': {
+                        'id':user.id,
+                        'name':user.name,
+                        'mobile':user.mobile,
+                        'email':user.email,
+                        'photo':'/media/'+str(user.photo),
+                        'image':"/media/profile_photo/user.png",
+                        'sex':user.sex,
+                        'dob':user.dob,
+                        'occupation':user.occupation,
+                        'title':user.title,
+                        'about':user.about,
+                        'work_experience':user.work_experience,
+                        'amount':ConsultationFee.amount,
+                        'description':user.description,
+                        'specialties':user.specialties,
+                        'specialty_id':user.specialty_id,
+                        'language':getListVal(user.language),
+                        'blood_group':user.blood_group,
+                        'locality':user.locality,
+                        'address':user.address,
+                        'address2':user.address2,
+                        'city':user.city,
+                        'state':user.state,
+                        'country':user.country,
+                        'pincode':user.pincode,
+                        'latitude_coordinate':user.latitude_coordinate,
+                        'longitude_coordinate':user.longitude_coordinate,
+                        'section_flag':getListVal(user.section_flag),
+                        'flag_count':user.flag_count,
+                        'verification':user.verification,
+                        'verification_text':user.verification_text,
+                        'created_by':user.created_by,
+                        'status':user.status,
+                        "treatmentdata": {
+                            "id": 1,
+                            "name": "General Medicine",
+                            "description": "General Medicine",
+                            "primary_image": "/media/treatments/livercontent_hEXgOAC.png",
+                        },
+                        'hosiptal': [
+                            {
+                                'id':1,
+                                'name':clinic.name,
+                                'city':clinic.city,
+                                'address':clinic.address,
+                                # 'description':clinic.description,
+                                # 'status':clinic.status
+                                # 'address':MapLocation.address,
+                                # 'city':MapLocation.city,
+                                # 'state':MapLocation.state,
+                                # 'country':MapLocation.country,
+                                'pincode':MapLocation.pincode,
+                                'latitude_coordinate':MapLocation.latitude_coordinate,
+                                'longitude_coordinate':MapLocation.longitude_coordinate,
+                                # 'description':MapLocation.description,
+                                # 'status':MapLocation.status
+                                'hospitalgallery': [
+                                    {
+                                        'id':1,
+                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                                    },
+                                    {
+                                        'id':2,
+                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                                    },
+                                    {
+                                        'id':3,
+                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                                    },
+                                ]
+                            },
+                            {
+                                'id':2,
+                                'name':clinic.name,
+                                'city':clinic.city,
+                                'address':clinic.address,
+                                # 'description':clinic.description,
+                                # 'status':clinic.status
+                                # 'address':MapLocation.address,
+                                # 'city':MapLocation.city,
+                                # 'state':MapLocation.state,
+                                # 'country':MapLocation.country,
+                                'pincode':MapLocation.pincode,
+                                'latitude_coordinate':MapLocation.latitude_coordinate,
+                                'longitude_coordinate':MapLocation.longitude_coordinate,
+                                # 'description':MapLocation.description,
+                                # 'status':MapLocation.status
+                                'hospitalgallery': [
+                                    {
+                                        'id':1,
+                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                                    },
+                                    {
+                                        'id':2,
+                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                                    },
+                                    {
+                                        'id':3,
+                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                                    },
+                                ]
+                            },
+                        ],
+                        'expertise': {
+                            'id':1,
+                            'name':'General Physician',
+                        },
+                        'reviews': [
+                            {
+                                'id':1,
+                                'review':'good service',
+                                'rate':4.1,
+                                'appointment_id':44,
+                                'doctor_id':44,
+                                'user_id':1,
+                                'created_at':"2021-06-05 11:06:10",
+                                'updated_at':"2021-06-05 11:06:10",
+                                'user': {
+                                    'name':'Anshu g',
+                                    'image':"/media/profile_photo/user.png",
+                                    'fullImage':"/media/profile_photo/user.png",
+                                },
+                            },
+                            {
+                                'id':2,
+                                'review':'good service',
+                                'rate':4.1,
+                                'appointment_id':44,
+                                'doctor_id':44,
+                                'user_id':1,
+                                'created_at':"2021-06-05 11:06:10",
+                                'updated_at':"2021-06-05 11:06:10",
+                                'user': {
+                                    'name':'Anshu g',
+                                    'image':"/media/profile_photo/user.png",
+                                    'fullImage':"/media/profile_photo/user.png",
+                                },
+                            },
+                            {
+                                'id':3,
+                                'review':'good service',
+                                'rate':4.1,
+                                'appointment_id':44,
+                                'doctor_id':44,
+                                'user_id':1,
+                                'created_at':"2021-06-05 11:06:10",
+                                'updated_at':"2021-06-05 11:06:10",
+                                'user': {
+                                    'name':'Anshu g',
+                                    'image':"/media/profile_photo/user.png",
+                                    'fullImage':"/media/profile_photo/user.png",
+                                },
+                            },
+                        ],
+                        'council_detail': {
+                            'name':council.name,
+                            'registration_no':council.registration_no,
+                            'registration_year':council.registration_year,
+                            'registration_file':str(council.file),
+                            'description':council.description,
+                            'status':council.status
+                        },
+                        'education_detail': {
+                            'name':education.name,
+                            'univercity':education.univercity,
+                            'passing_year':education.passing_year,
+                            'description':education.description,
+                            'status':education.status
+                        },
+                        'clinic_detail': {
+                            'name':clinic.name,
+                            'city':clinic.city,
+                            'address':clinic.address,
+                            'description':clinic.description,
+                            'status':clinic.status
+                        },
+                        'identity_proof_detail': {
+                            'name':IdentityProof.name,
+                            'file':'/media/'+str(IdentityProof.file),
+                            'description':IdentityProof.description,
+                            'status':IdentityProof.status
+                        },
+                        'registration_detail': {
+                            'name':Registration.name,
+                            'file':str(Registration.file),
+                            'description':Registration.description,
+                            'status':Registration.status
+                        },
+                        'establishment_detail': {
+                            'name':Establishment.name,
+                            'file':str(Establishment.file),
+                            'description':Establishment.description,
+                            'status':Establishment.status
+                        },
+                        'maplocations_detail': {
+                            'name':MapLocation.name,
+                            'address':MapLocation.address,
+                            'city':MapLocation.city,
+                            'state':MapLocation.state,
+                            'country':MapLocation.country,
+                            'pincode':MapLocation.pincode,
+                            'latitude_coordinate':MapLocation.latitude_coordinate,
+                            'longitude_coordinate':MapLocation.longitude_coordinate,
+                            'description':MapLocation.description,
+                            'status':MapLocation.status
+                        },
+                        'consultationfee_detail': {
+                            'name':ConsultationFee.name,
+                            'amount':ConsultationFee.amount,
+                            'description':ConsultationFee.description,
+                            'status':ConsultationFee.status
+                        },
+                    },
+                    'message': 'Details successfully get',
+                    'status' : status.HTTP_200_OK
+                }
+        elif user.occupation == "patient":
+            return JsonResponse({'message': 'Profile does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return JsonResponse({'message': 'Profile does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(response, status=status.HTTP_200_OK)
+        #return JsonResponse({'code': 200,'message': 'successfully get!'}, status=status.HTTP_201_CREATED)
+    except UserProfiles.DoesNotExist:
+        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 def patients_list(request):
@@ -433,7 +1274,7 @@ def getHealthIssues(request):
     if request.method == 'GET':
         items = TreatmentCategories.objects.all()
         if items is not None:
-            data_serializer = getSpecialtySerializer(items, many=True)
+            data_serializer = getHealthIssuesSerializer(items, many=True)
             return Response({'healthissuedata': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
             result = items
         else:
@@ -1070,16 +1911,16 @@ def getDoctorAppointmentTimePeriods(request, pk):
         return Response(users, status=status.HTTP_200_OK)
         return Response(users_serializer.data, safe=False)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def getLanguages(request):
     if request.method == 'GET':
         items = ModelLanguages.objects.all()
         if items is not None:
+            data_serializer = ModelLanguagesSerializer(items, many=True)
+            return Response({'languagedata': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
             result = items
         else:
-            result = 'Success'
-        users_serializer = ModelLanguagesSerializer(result, many=True)
-        return JsonResponse(users_serializer.data, safe=False)
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
@@ -1295,7 +2136,7 @@ def SignupOTPAPI(request):
                 occupation = request.data.get('occupation', None)
                 if occupation == 'doctor':
                     pass
-                    pro_obj = UserProfiles.objects.create(users_id=uid, name=name, email=email, mobile=mobile, occupation='doctor')
+                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile, occupation='doctor')
                     pro_obj.save()
                     pro_obj1 = UsersRegistrationCouncils.objects.create(user_id=uid, name=name)
                     pro_obj1.save()
@@ -1316,7 +2157,7 @@ def SignupOTPAPI(request):
                     pro_obj9 = ConsultationFees.objects.create(user_id=uid, name=name)
                     pro_obj9.save()
                 else:
-                    pro_obj = UserProfiles.objects.create(users_id=uid, name=p_name, email=email, mobile=mobile)
+                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile)
                     pro_obj.save()
                 #===================================================
                 response = {
@@ -1379,7 +2220,8 @@ def SignupOTP(request, mobile, occupation=None):
             pass
         if mobile:
             try:
-                user_obj = User.objects.create(username=mobile, email=email)
+                user_obj = User.objects.create(username=mobile)
+                #user_obj = User.objects.create(username=mobile, email=email)
                 user_obj.set_password(password)
                 user_obj.save()
                 user_auth = authenticate(username=mobile, password=password)
@@ -1393,7 +2235,7 @@ def SignupOTP(request, mobile, occupation=None):
                 occupation = request.data.get('occupation', None)
                 if occupation == 'doctor':
                     pass
-                    pro_obj = UserProfiles.objects.create(users_id=uid, name=name, email=email, mobile=mobile, occupation='doctor')
+                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile, occupation='doctor')
                     pro_obj.save()
                     pro_obj1 = UsersRegistrationCouncils.objects.create(user_id=uid, name=name)
                     pro_obj1.save()
@@ -1414,7 +2256,7 @@ def SignupOTP(request, mobile, occupation=None):
                     pro_obj9 = ConsultationFees.objects.create(user_id=uid, name=name)
                     pro_obj9.save()
                 else:
-                    pro_obj = UserProfiles.objects.create(users_id=uid, name=p_name, email=email, mobile=mobile)
+                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile)
                     pro_obj.save()
                 #===================================================
                 response = {

@@ -266,7 +266,8 @@ class TreatmentCategories(models.Model):
 	description = models.TextField(null=True, blank=True)
 	slug = models.CharField(max_length=100, null=True, blank=True)
 	primary_image = models.FileField('primary_image', upload_to="treatments_categories/", null=True, blank=True)
-	treatment_id = models.IntegerField(null=True, blank=True)
+	treatment = models.ForeignKey(Treatments, on_delete=models.CASCADE, null=True, blank=True)
+	#treatment_id = models.IntegerField(null=True, blank=True)
 	sort_id = models.IntegerField(null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
@@ -465,4 +466,7 @@ class HistoryLogs(models.Model):
 
 	def __str__(self):
 		return self.name
+
+
+
 

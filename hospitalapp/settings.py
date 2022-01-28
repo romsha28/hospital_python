@@ -180,6 +180,7 @@ PHONENUMBER_DEFAULT_REGION = "IN"
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'hospital'
+LOGOUT_REDIRECT_URL = 'login'
 #LOGIN_REDIRECT_URL = 'http://127.0.0.1:8004/hospital/'
 
 ################################ MEDIA ####################################################

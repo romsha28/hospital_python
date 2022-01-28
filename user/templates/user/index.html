@@ -79,16 +79,14 @@ body  {
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item"><a class="nav-link" href="{% url "index" %}">Website</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="{% url "index" %}">Website</a></li> -->
           <!-- <img src='{% static "images/home.jpg" %}' alt="profile"/> -->
-          
-
-          {% if user.is_authenticated %}
+          <!-- {% if user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="{% url "logout" %}">Sign out</a></li>
           {% else %}
           <li class="nav-item"><a class="nav-link" href="{% url "register" %}">Sign up</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url "login" %}">Sign in</a></li>
-          {% endif %}
+          {% endif %} -->
 
 
           <li class="nav-item nav-profile dropdown">
@@ -109,7 +107,7 @@ body  {
               <a href='{% url "hospital" %}' class="dropdown-item"><i class="ti-dashboard text-primary"></i>Hospital Admin</a>
               <a href='{% url "logout" %}' class="dropdown-item"><i class="ti-power-off text-primary"></i>Sign out</a>
               {% else %}
-              <a href='{% url "register" %}' class="dropdown-item"><i class="ti-file text-primary"></i>Sign up</a>
+              <!-- <a href='{% url "register" %}' class="dropdown-item"><i class="ti-file text-primary"></i>Sign up</a> -->
               <a href='{% url "login" %}' class="dropdown-item"><i class="ti-power-off text-primary"></i>Sign in</a>
               {% endif %}
             </div>

@@ -60,7 +60,16 @@ urlpatterns = [
     path('api/post-languages', views.profileLanguageUpdate, name='post-languages'),
     path('api/post-address', views.postUserAddress, name='post-address'),
     url(r'^api/get-address/(?P<pk>[0-9]+)$', views.getUserAddress, name='get-address'),
+    #url(r'^api/treatment-wise-doctor$', views.postTreatmentWiseDoctors),
+    url(r'^api/treatment-wise-doctor$', views.postTreatmentWiseDoctorsTest),
+    url(r'^api/recommend-doctor$', views.postRecommendedDoctors),
+    path('api/get-banner', views.getBannerHome, name='get-banner'),
+    path('api/get-product', views.getProducts, name='get-product'),
+    path('api/get-plansx', views.getSubscriptionPlans, name='get-plansx'),
+    path('api/get-plans', views.getPlans, name='get-plans'),
     #########################################################################################
     path('api/hellox', views.HelloView.as_view(), name='hellox'),
     path('api/hello', views.getHello, name='hello'),
+    path('api/get-location', views.getUserLocation, name='get-location'),
+    path('api/get-data', views.getMultiData, name='get-data'),
 ]

@@ -100,6 +100,27 @@ class Address(models.Model):
 	def __str__(self):
 		return self.subject
 
+class UserReviews(models.Model):
+	profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True)
+	patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+	doctor = models.IntegerField(null=True, blank=True)
+	message = models.TextField(null=True, blank=True)
+	ratting = models.IntegerField(null=True, blank=True)
+	status = models.BooleanField(default=False)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "UserReviews"
+
+	def __str__(self):
+		return self.message
+
 # A projected coordinate system (only valid for South Texas!)
 # is used, units are in meters.
 # class SouthTexasCity(models.Model):

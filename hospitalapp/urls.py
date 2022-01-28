@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from django.conf.urls import url 
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -39,9 +39,13 @@ urlpatterns = [
     #path('', include('website.urls')),
     path('hospital/', include('hospital.urls')),
     ##### user related path##########################
-    path('', include('user.urls')),
-    path('login/', user_view.Login, name ='login'),
-    path('logout/', auth.LogoutView.as_view(template_name ='user/index.html'), name ='logout'),
+    # path('', include('user.urls')),
+    path('', user_view.Login, name ='login'),
+    path('login', user_view.Login, name ='login'),
+    path('logout',auth.LogoutView.as_view(template_name='login.html'),name="logout"),
+    #path('logout/', auth.LogoutView.as_view(next_page=reverse_lazy('auth:login')), name='logout'),
+    #path('logout/', 'django.contrib.auth.views.logout',{'next_page': '/login/'}),
+    #path('logout/', auth.LogoutView.as_view(template_name ='user/login.html'), name ='logout'),
     path('register/', user_view.register, name ='register'),
     ##### user related path##########################
     path('__debug__/', include(debug_toolbar.urls)),
