@@ -2,6 +2,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from datetime import date
 from django.utils import timezone
+#from apimaster.models import *
 
 SEX_CHOICES = (
     ('male','Male'),

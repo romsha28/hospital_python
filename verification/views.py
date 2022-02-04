@@ -19,6 +19,7 @@ class getPhoneNumberRegistered(APIView):
     @staticmethod
     def get(request, phone):
         try:
+            #phone = request.data.get('phone')
             Mobile = phoneModel.objects.get(Mobile=phone)  # if Mobile already exists the take this else create New One
         except ObjectDoesNotExist:
             phoneModel.objects.create(
@@ -38,6 +39,7 @@ class getPhoneNumberRegistered(APIView):
     @staticmethod
     def post(request, phone):
         try:
+            #phone = request.data.get('phone')
             Mobile = phoneModel.objects.get(Mobile=phone)
         except ObjectDoesNotExist:
             return Response("User does not exist", status=404)  # False Call
@@ -49,7 +51,8 @@ class getPhoneNumberRegistered(APIView):
             Mobile.isVerified = True
             Mobile.save()
             #username = request.data.get('mobile')
-            result = SignupOTP(request, phone)
+            phone_code = request.data.get('phone_code')
+            result = SignupOTP(request, phone, phone_code)
             return Response(result, status=200)
             #return Response("You are authorised", status=200)
         return Response("OTP is wrong", status=400)

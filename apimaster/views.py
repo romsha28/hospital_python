@@ -23,7 +23,8 @@ from django.db.models.functions import Concat
 
 import base64
 from django.core.files.base import ContentFile
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+import datetime
 from json import dumps
 import json
 import ast
@@ -31,10 +32,10 @@ import ast
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.renderers import JSONRenderer
 
 # from geopy.geocoders import Nominatim
 # import geocoder
-
 
 # from .serializers import UserSerializer, RegisterSerializer, UserProfilesSerializer, DoctorCouncilSerializer, LoginSerializers
 # from .models import UserProfiles
@@ -52,10 +53,8 @@ from rest_framework.decorators import api_view, permission_classes
 #             token = self.model.objects.select_related('user').get(key=key)
 #         except self.model.DoesNotExist:
 #             return (None, '')
-
 #         if not token.user.is_active:
 #             raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
-
 #         return (token.user, token)
 
 
@@ -578,7 +577,15 @@ def postTreatmentWiseDoctorsTest(request):
     except User.DoesNotExist:
         return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-class getMultiData(generics.ListCreateAPIView):
+@api_view(['POST'])
+def getMultiData(reqquest):
+    itm = TreatmentCategories.objects.all()
+    srz = getTreatmentCategorieSerializer(itm, many=True)
+    # data = {"hey":"hello world"}
+    json_data = JSONRenderer().render(srz.data)
+    return HttpResponse(json_data, content_type='application/json')
+
+class getMultiDataxx(generics.ListCreateAPIView):
     def get(self, request):
         serializer_class = ParentSerializer
         queryset = Treatments.objects.all()
@@ -923,17 +930,67 @@ def getDoctorsx(request, pk):
 @api_view(['GET','POST'])
 def getDoctors(request, pk):
     try:
-        user = UserProfiles.objects.get(users_id=pk)
+        #user = UserProfiles.objects.get(users_id=pk)
+        user = UserProfiles.objects.get(id=pk)
+        userid = user.users_id
         if user.occupation == "doctor":
-            council = UsersRegistrationCouncils.objects.get(user_id=pk)
-            education = UsersEducations.objects.get(user_id=pk)
-            clinic = UsersClinics.objects.get(user_id=pk)
-            IdentityProof = UsersIdentityProofs.objects.get(user_id=pk)
-            Registration = MedicalRegistrationProofs.objects.get(user_id=pk)
-            Establishment = EstablishmentProofs.objects.get(user_id=pk)
-            MapLocation = MapLocations.objects.get(user_id=pk)
-            #EstablishmentTimings = EstablishmentTimings.objects.get(user_id=pk)
-            ConsultationFee = ConsultationFees.objects.get(user_id=pk)        
+            council = UsersRegistrationCouncils.objects.get(user_id=userid)
+            ##################################
+            educationData = UsersEducations.objects.filter(user_id=userid)
+            education_detail = []
+            for item in educationData:
+                education_detail.append(
+                    {
+                        'name':item.name,
+                        'univercity':item.univercity,
+                        'passing_year':item.passing_year,
+                        'description':item.description,
+                        'from_at':"2004-08-08",
+                        'to_at':"2010-08-08",
+                        'status':item.status
+                    }
+                )
+            clinicRow = UsersClinics.objects.filter(user_id=userid)
+            hosiptal = []
+            for clinic in clinicRow:
+                hosiptal.append(
+                    {
+                        'id':1,
+                        'name':clinic.name,
+                        'city':clinic.city,
+                        'address':clinic.address,
+                        'pincode':clinic.pincode,
+                        'latitude_coordinate':clinic.latitude_coordinate,
+                        'longitude_coordinate':clinic.longitude_coordinate,
+                        'from_at':clinic.from_at,
+                        'to_at':clinic.to_at,
+                        'hospitalgallery': [
+                            {
+                                'id':1,
+                                'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                            },
+                            {
+                                'id':2,
+                                'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                            },
+                            {
+                                'id':3,
+                                'image':"/media/treatments/livercontent_hEXgOAC.png",
+                                'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
+                            },
+                        ]
+                    }
+                )
+            ##################################
+            
+            IdentityProof = UsersIdentityProofs.objects.get(user_id=userid)
+            Registration = MedicalRegistrationProofs.objects.get(user_id=userid)
+            Establishment = EstablishmentProofs.objects.get(user_id=userid)
+            MapLocation = MapLocations.objects.get(user_id=userid)
+            ConsultationFee = ConsultationFees.objects.get(user_id=userid)
+            EstablishmentTiming = EstablishmentTimings.objects.get(user_id=userid)
             response = {
                     'data': {
                         'id':user.id,
@@ -975,76 +1032,7 @@ def getDoctors(request, pk):
                             "description": "General Medicine",
                             "primary_image": "/media/treatments/livercontent_hEXgOAC.png",
                         },
-                        'hosiptal': [
-                            {
-                                'id':1,
-                                'name':clinic.name,
-                                'city':clinic.city,
-                                'address':clinic.address,
-                                # 'description':clinic.description,
-                                # 'status':clinic.status
-                                # 'address':MapLocation.address,
-                                # 'city':MapLocation.city,
-                                # 'state':MapLocation.state,
-                                # 'country':MapLocation.country,
-                                'pincode':MapLocation.pincode,
-                                'latitude_coordinate':MapLocation.latitude_coordinate,
-                                'longitude_coordinate':MapLocation.longitude_coordinate,
-                                # 'description':MapLocation.description,
-                                # 'status':MapLocation.status
-                                'hospitalgallery': [
-                                    {
-                                        'id':1,
-                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
-                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
-                                    },
-                                    {
-                                        'id':2,
-                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
-                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
-                                    },
-                                    {
-                                        'id':3,
-                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
-                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
-                                    },
-                                ]
-                            },
-                            {
-                                'id':2,
-                                'name':clinic.name,
-                                'city':clinic.city,
-                                'address':clinic.address,
-                                # 'description':clinic.description,
-                                # 'status':clinic.status
-                                # 'address':MapLocation.address,
-                                # 'city':MapLocation.city,
-                                # 'state':MapLocation.state,
-                                # 'country':MapLocation.country,
-                                'pincode':MapLocation.pincode,
-                                'latitude_coordinate':MapLocation.latitude_coordinate,
-                                'longitude_coordinate':MapLocation.longitude_coordinate,
-                                # 'description':MapLocation.description,
-                                # 'status':MapLocation.status
-                                'hospitalgallery': [
-                                    {
-                                        'id':1,
-                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
-                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
-                                    },
-                                    {
-                                        'id':2,
-                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
-                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
-                                    },
-                                    {
-                                        'id':3,
-                                        'image':"/media/treatments/livercontent_hEXgOAC.png",
-                                        'fullImage':"/media/treatments/livercontent_hEXgOAC.png",
-                                    },
-                                ]
-                            },
-                        ],
+                        'hosiptal': hosiptal,
                         'expertise': {
                             'id':1,
                             'name':'General Physician',
@@ -1053,7 +1041,7 @@ def getDoctors(request, pk):
                             {
                                 'id':1,
                                 'review':'good service',
-                                'rate':4.1,
+                                'rate':5,
                                 'appointment_id':44,
                                 'doctor_id':44,
                                 'user_id':1,
@@ -1067,8 +1055,8 @@ def getDoctors(request, pk):
                             },
                             {
                                 'id':2,
-                                'review':'good service',
-                                'rate':4.1,
+                                'review':'bed doctor',
+                                'rate':0,
                                 'appointment_id':44,
                                 'doctor_id':44,
                                 'user_id':1,
@@ -1083,7 +1071,7 @@ def getDoctors(request, pk):
                             {
                                 'id':3,
                                 'review':'good service',
-                                'rate':4.1,
+                                'rate':3,
                                 'appointment_id':44,
                                 'doctor_id':44,
                                 'user_id':1,
@@ -1104,20 +1092,7 @@ def getDoctors(request, pk):
                             'description':council.description,
                             'status':council.status
                         },
-                        'education_detail': {
-                            'name':education.name,
-                            'univercity':education.univercity,
-                            'passing_year':education.passing_year,
-                            'description':education.description,
-                            'status':education.status
-                        },
-                        'clinic_detail': {
-                            'name':clinic.name,
-                            'city':clinic.city,
-                            'address':clinic.address,
-                            'description':clinic.description,
-                            'status':clinic.status
-                        },
+                        'education_detail':education_detail,
                         'identity_proof_detail': {
                             'name':IdentityProof.name,
                             'file':'/media/'+str(IdentityProof.file),
@@ -1137,7 +1112,7 @@ def getDoctors(request, pk):
                             'status':Establishment.status
                         },
                         'maplocations_detail': {
-                            'name':MapLocation.name,
+                            # 'name':MapLocation.name,
                             'address':MapLocation.address,
                             'city':MapLocation.city,
                             'state':MapLocation.state,
@@ -1149,7 +1124,7 @@ def getDoctors(request, pk):
                             'status':MapLocation.status
                         },
                         'consultationfee_detail': {
-                            'name':ConsultationFee.name,
+                            # 'name':ConsultationFee.name,
                             'amount':ConsultationFee.amount,
                             'description':ConsultationFee.description,
                             'status':ConsultationFee.status
@@ -1970,9 +1945,252 @@ def getUserAddress(request, pk):
         #except items_serializer.DoesNotExist:
             return Response({'message': "Address Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
 
+@api_view(['POST'])
+def postFamilyMemberProfiles(request):
+    if request.method == 'POST':
+        obj = FamilyMemberProfiles()
+        obj.user_id = request.data.get('user_id', None)
+        obj.name = request.data.get('name')
+        obj.email = request.data.get('email')
+        obj.mobile = request.data.get('mobile')
+        obj.blood_relationship = request.data.get('blood_relationship')
+        obj.address = request.data.get('address')
+        obj.city = request.data.get('city')
+        obj.state = request.data.get('state')
+        obj.country = request.data.get('country')
+        obj.pincode = request.data.get('pincode')
+        obj.latitude_coordinate = request.data.get('latitude_coordinate')
+        obj.longitude_coordinate = request.data.get('longitude_coordinate')
+        try:
+            #obj.photo = request.data.get('photo')
+            img_base64_str = request.data.get('photo')
+            if img_base64_str:
+                obj.photo = base64_file(img_base64_str)
+        except KeyError:
+            raise ParseError('Request has no resource file attached')
+        obj.save()
+        return JsonResponse({'message': 'successfully Inserted!','status':200}, status=status.HTTP_201_CREATED)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getFamilyMemberProfiles(request, pk):
+    if request.method == 'GET':
+        try:
+            # User = UserProfiles.objects.get(id=pk)
+            # userid = User.users_id
+            items = FamilyMemberProfiles.objects.filter(user_id=pk)
+            if items:
+                items_serializer = FamilyMemberProfilesSerializer(items, many=True)
+                return Response({'data': items_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': "Profile Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        except ObjectDoesNotExist:
+            return Response({'message': "Profile Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+@api_view(['POST','PUT'])
+def updateFamilyMemberProfiles(request):
+    if request.method == 'POST' or request.method == 'PUT':
+        pk = request.data.get('id', None)
+        obj = FamilyMemberProfiles.objects.get(id=pk)
+        obj.name = request.data.get('name')
+        obj.email = request.data.get('email')
+        obj.sex = request.data.get('sex')
+        obj.mobile = request.data.get('mobile')
+        obj.blood_relationship = request.data.get('blood_relationship')
+        obj.address = request.data.get('address')
+        obj.dob = request.data.get('dob')
+        try:
+            #obj.photo = request.data.get('photo')
+            img_base64_str = request.data.get('photo')
+            if img_base64_str:
+                obj.photo = base64_file(img_base64_str)
+        except KeyError:
+            raise ParseError('Request has no resource file attached')
+        obj.save()
+        return JsonResponse({'message': 'successfully updated!','status':200}, status=status.HTTP_201_CREATED)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def postUserReviews(request):
+    if request.method == 'POST':
+        user_id = request.data.get('user_id', None)
+        doctor_id = request.data.get('doctor_id', None)
+        UserData = UserProfiles.objects.get(users_id=user_id)
+        profile_id = UserData.id
+        User = UserProfiles.objects.get(id=doctor_id)
+        doctor_userid = User.users_id
+        obj = UserReviews()
+        obj.profile_id = profile_id
+        obj.doctor_id = doctor_userid
+        obj.patient_id = user_id
+        obj.ratting = request.data.get('ratting')
+        obj.message = request.data.get('message')
+        try:
+            obj.save()
+        except KeyError:
+            return Response({'message': 'Something is wrong!','status':400}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': 'successfully Inserted!','status':200}, status=status.HTTP_201_CREATED)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getUserReviews(request, pk):
+    if request.method == 'GET':
+        try:
+            User = UserProfiles.objects.get(id=pk)
+            userid = User.users_id
+            items = UserReviews.objects.filter(user_id=userid)
+            if items:
+                items_serializer = FamilyMemberProfilesSerializer(items, many=True)
+                return Response({'data': items_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': "Profile Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        except ObjectDoesNotExist:
+            return Response({'message': "Profile Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+@api_view(['POST'])
+def postFeverateDoctors(request):
+    if request.method == 'POST':
+        user_id = request.data.get('user_id', None)
+        doctor_id = request.data.get('doctor_id', None)
+        UserData = UserProfiles.objects.get(users_id=user_id)
+        profile_id = UserData.id
+        User = UserProfiles.objects.get(id=doctor_id)
+        doctor_userid = User.users_id
+        obj = FeverateDoctors()
+        obj.profile_id = profile_id
+        obj.doctor_id = doctor_userid
+        obj.patient_id = user_id
+        try:
+            obj.save()
+        except KeyError:
+            return Response({'message': 'Something is wrong!','status':400}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': 'successfully Inserted!','status':200}, status=status.HTTP_201_CREATED)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getFeverateDoctors(request, pk):
+    if request.method == 'GET':
+        try:
+            User = UserProfiles.objects.get(id=pk)
+            userid = User.users_id
+            feverate_doctors = FeverateDoctors.objects.get(patient_id=userid)
+            doctor_id = feverate_doctors.doctor_id
+            items = UserProfiles.objects.get(users_id=doctor_id)
+            if items:
+                response = {
+                    'name':items.name,
+                    'mobile':items.mobile,
+                    'email':items.email,
+                    'sex':items.sex,
+                    'dob':items.dob,
+                    'about':items.about,
+                    'photo':str(items.photo),
+                    'work_experience':items.work_experience,
+                    'description':items.description,
+                    'specialties':items.specialties,
+                    'specialty_id':items.specialty_id,
+                    'language':getListVal(items.language),
+                    'blood_group':items.blood_group,
+                    'locality':items.locality,
+                    'address':items.address,
+                    'address2':items.address2,
+                    'city':items.city,
+                    'state':items.state,
+                    'country':items.country,
+                    'pincode':items.pincode,
+                    'latitude_coordinate':user.latitude_coordinate,
+                    'longitude_coordinate':user.longitude_coordinate,
+                    'section_flag':getListVal(user.section_flag),
+                    'flag_count':user.flag_count,
+                    'verification':user.verification,
+                    'verification_text':user.verification_text,
+                    'created_by':user.created_by, 
+                }
+                # return JsonResponse(response, status=status.HTTP_200_OK)
+                # items_serializer = FamilyMemberProfilesSerializer(items, many=True)
+                return Response({'data': response, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': "Profile Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        except ObjectDoesNotExist:
+            return Response({'message': "Profile Doesn't exist"},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+#######################################################################################################
+#       Main Functions                                                                                #
+#######################################################################################################
+
+@api_view(['POST'])
+def getDoctorSlots(request):
+    if request.method == 'POST':
+        pk = request.data.get('doctor_id')
+        q_date = request.data.get('q_date')
+        hospital_id = request.data.get('hospital_id')
+        if pk is None:
+            return Response({'message': 'Please pass doctor id!','status' : 400}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            User = UserProfiles.objects.get(id=pk)
+            userid = User.users_id
+            if User.occupation == "doctor":
+                EstablishmentTiming = EstablishmentTimings.objects.get(user_id=userid)
+                date_str = '2018-06-29'
+                time_str = str(EstablishmentTiming.start_at) # '08:15:27'
+                #time_str ='08:15:27'
+                ###### Slots ################################################
+                seconds_diff = int(hms_to_s(str(EstablishmentTiming.end_at)))-int(hms_to_s(str(EstablishmentTiming.start_at)))
+                minutes_diff = seconds_diff/60
+                slots = int(minutes_diff/15)
+                slotsdata = []
+                for n in range(1,slots+1):
+                    if n>=1:
+                        date_time_str = date_str+' '+time_str
+                        date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                        updated_time = date_time_obj + timedelta(minutes=15)
+                        pre_time = date_time_obj.time()
+                        next_time = updated_time.time()
+                        time_str = str(next_time)
+                        slotsdata.append({"start_at": pre_time,"end_at": next_time})
+                #############################################################
+                response = {
+                    'slots':slotsdata,
+                    'message': 'get successfully!',
+                    'status' : status.HTTP_200_OK     
+                }
+                return JsonResponse(response, status=status.HTTP_200_OK)
+                #return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            else:
+                return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def postTreatmentWiseDoctorNew(request):
+    if request.method == 'POST':
+        specialties = request.data.get('specialties')
+        items = UserProfiles.objects.filter(occupation='doctor')
+        if items is not None:
+            data_serializer = TreatmentWiseDoctorsNewSerializer(items, many=True)
+            return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 #######################################################################################################
 #       base functions                                                                                #
 #######################################################################################################
+
+def dhms_to_sec(dhms_str):
+    '''supports also format of d:h:m:s, h:m:s, m:s and s'''
+    _,d,h,m,s = (':0'*10+dhms_str).rsplit(':',4)
+    return int(d)*24*60*60+int(h)*60*60+int(m)*60+int(s)
+
+def hms_to_s(s):
+    t = 0
+    for u in s.split(':'):
+        t = 60 * t + int(u)
+    return t
 
 def base64_file(data, name=None):
     _format, _img_str = data.split(';base64,')
@@ -2199,7 +2417,7 @@ def LoginOTPAPI(request):
         return Response({'message': 'Please entered username and password!'},status=status.HTTP_406_NOT_ACCEPTABLE)
 
 ######################################################################################################################
-def SignupOTP(request, mobile, occupation=None):
+def SignupOTP(request, mobile, phone_code="+91",occupation=None):
     if mobile != None:
         try:
             email = "test1234@gmail.com"
@@ -2235,7 +2453,7 @@ def SignupOTP(request, mobile, occupation=None):
                 occupation = request.data.get('occupation', None)
                 if occupation == 'doctor':
                     pass
-                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile, occupation='doctor')
+                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile, phone_code=phone_code, occupation='doctor')
                     pro_obj.save()
                     pro_obj1 = UsersRegistrationCouncils.objects.create(user_id=uid, name=name)
                     pro_obj1.save()
@@ -2256,7 +2474,7 @@ def SignupOTP(request, mobile, occupation=None):
                     pro_obj9 = ConsultationFees.objects.create(user_id=uid, name=name)
                     pro_obj9.save()
                 else:
-                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile)
+                    pro_obj = UserProfiles.objects.create(users_id=uid, mobile=mobile, phone_code=phone_code)
                     pro_obj.save()
                 #===================================================
                 response = {

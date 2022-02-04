@@ -36,17 +36,41 @@ class getSpecialtySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'primary_image')
 
 ####################
-class getTreatmentCategorieSerializer(serializers.ModelSerializer):
+class getxTreatmentCategorieSerializer(serializers.ModelSerializer):
     class Meta:
         model = TreatmentCategories
         fields = ('id', 'name', 'description', 'primary_image',)
 
+
+class getxTreatmentSerializer(serializers.ModelSerializer):
+    categories = getxTreatmentCategorieSerializer(many=True, read_only=True)
+    class Meta:
+        model = Treatments
+        fields = ('id', 'name', 'description', 'primary_image', 'categories')
+
+#>>>>>>>>>>>>>
+
+class getTreatmentCategorieSerializer(serializers.ModelSerializer):
+    treatment = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = TreatmentCategories
+        fields = ('id', 'name', 'description', 'primary_image', 'treatment')
+        read_only_fields = ('id', 'name', 'description', 'primary_image')
+
+    def get_treatment(self, obj):
+        
+        items = Treatments.objects.filter(id=obj.treatment.id)
+        if items:
+            return getSpecialtySerializer(items, many=True).data
+        return []
 
 class getTreatmentSerializer(serializers.ModelSerializer):
     categories = getTreatmentCategorieSerializer(many=True, read_only=True)
     class Meta:
         model = Treatments
         fields = ('id', 'name', 'description', 'primary_image', 'categories')
+
+#>>>>>>>>>>>>>
 
 class ChildSerializer(ModelSerializer):
     class Meta:
@@ -127,7 +151,33 @@ class TreatmentWiseDoctorsSerializer(serializers.ModelSerializer):
         model = UserProfiles
         fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation", "about", "work_experience", "description", "specialties", "specialty_id", "language", "blood_group", "locality", "address", "address2", "city", "state", "country", "pincode", "latitude_coordinate", "longitude_coordinate", "verification", "verification_text", "created_by", "created_at", "status")
 
+class TreatmentWiseDoctorsNewSerializer(serializers.ModelSerializer):
+    specialty = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = UserProfiles
+        fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation", 'specialty')
+        read_only_fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation")
 
+    def get_specialty(self, obj):
+        
+        items = Treatments.objects.filter(id=obj.specialty.id)
+        if items:
+            return getSpecialtySerializer(items, many=True).data
+        return []
+#########################################################################################################################
+
+
+
+
+class FamilyMemberProfilesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamilyMemberProfiles
+        fields = ('id', 'name', 'email', 'mobile', 'blood_relationship','sex', 'dob', 'city','address','photo')
+
+class UsersEducationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsersEducations
+        fields = ('id', 'name', 'univercity', 'college', 'board', 'from_at', 'end_at','passing_year','grade')
 
 #########################################################################################################################
 #User Serializer

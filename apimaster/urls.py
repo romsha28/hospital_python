@@ -67,9 +67,18 @@ urlpatterns = [
     path('api/get-product', views.getProducts, name='get-product'),
     path('api/get-plansx', views.getSubscriptionPlans, name='get-plansx'),
     path('api/get-plans', views.getPlans, name='get-plans'),
+    path('api/get-doctor-slots', views.getDoctorSlots, name='get-doctor-slots'),
+    path('api/post-familymember', views.postFamilyMemberProfiles, name='post-familymember'),
+    url(r'^api/get-familymember/(?P<pk>[0-9]+)$', views.getFamilyMemberProfiles, name='get-familymember'),
+    path('api/update-familymember', views.updateFamilyMemberProfiles, name='update-familymember'),
+    path('api/post-userreviews', views.postUserReviews, name='post-userreviews'),
+    url(r'^api/get-userreviews/(?P<pk>[0-9]+)$', views.getUserReviews, name='get-userreviews'),
+    path('api/post-feveratedoctor', views.postFeverateDoctors, name='post-feveratedoctor'),
+    url(r'^api/get-feveratedoctor/(?P<pk>[0-9]+)$', views.getFeverateDoctors, name='get-feveratedoctor'),
     #########################################################################################
     path('api/hellox', views.HelloView.as_view(), name='hellox'),
     path('api/hello', views.getHello, name='hello'),
     path('api/get-location', views.getUserLocation, name='get-location'),
     path('api/get-data', views.getMultiData, name='get-data'),
+    path('api/get-ddata', views.postTreatmentWiseDoctorNew, name='get-ddata'),
 ]

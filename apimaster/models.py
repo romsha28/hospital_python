@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 #from django.contrib.gis.db import models
 # from django.views.decorators.csrf import csrf_protect
+from hospital.models import *
 
 SEX_CHOICES = (
     ('male','Male'),
@@ -34,13 +35,15 @@ class UserProfiles(models.Model):
 	dob = models.DateField(null=True, blank=True)
 	occupation = models.CharField(max_length=20, choices=Occupation, default='patient')
 	specialties = models.CharField(max_length=150, null=True, blank=True)
-	specialty_id = models.IntegerField(null=True, blank=True)
+	#specialty_id = models.IntegerField(null=True, blank=True)
+	specialty = models.ForeignKey(Treatments, on_delete=models.CASCADE, null=True, blank=True, default=1)
 	language = models.CharField(max_length=250, null=True, blank=True)
 	language_id = models.IntegerField(null=True, blank=True)
 	photo = models.FileField('photo', upload_to="profile_photo/", null=True, blank=True)
 	sex = models.CharField(max_length=20, choices=SEX_CHOICES, default='male')
 	email = models.EmailField(max_length = 150, null=True, blank=True)
 	#mobile = PhoneNumberField(blank=False, unique=True, region="IN")
+	phone_code = models.CharField(max_length=20, null=True, blank=True)
 	mobile = models.CharField(max_length=20, null=True, blank=True)
 	mobile1 = models.CharField(max_length=20, null=True, blank=True)
 	blood_group = models.CharField(max_length=50, null=True, blank=True)
@@ -71,6 +74,7 @@ class UserProfiles(models.Model):
 	
 	def __str__(self):
 		return self.name
+#####################################  profile links  #####################################
 
 class Address(models.Model):
 	user_id = models.IntegerField(null=True, blank=True)
@@ -101,9 +105,9 @@ class Address(models.Model):
 		return self.subject
 
 class UserReviews(models.Model):
-	profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True)
-	patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-	doctor = models.IntegerField(null=True, blank=True)
+	profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True, related_name='profile')
+	patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='patient')
+	doctor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='doctor')
 	message = models.TextField(null=True, blank=True)
 	ratting = models.IntegerField(null=True, blank=True)
 	status = models.BooleanField(default=False)
@@ -120,6 +124,75 @@ class UserReviews(models.Model):
 
 	def __str__(self):
 		return self.message
+
+class FeverateDoctors(models.Model):
+	profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True, related_name='fd_profile')
+	patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='fd_patient')
+	doctor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='fd_doctor')
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "FeverateDoctor"
+
+	def __str__(self):
+		return self.profile
+
+class RecommendedDoctors(models.Model):
+	profile = models.ForeignKey(UserProfiles, on_delete=models.CASCADE, null=True, blank=True, related_name='rd_profile')
+	patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='rd_patient')
+	doctor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='rd_doctor')
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "RecommendedDoctors"
+
+	def __str__(self):
+		return self.profile
+
+class FamilyMemberProfiles(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fm_user")
+	name = models.CharField(max_length=100, null=True, blank=True)
+	about = models.TextField(null=True, blank=True)
+	dob = models.DateField(null=True, blank=True)
+	photo = models.FileField('photo', upload_to="profile_photo/", null=True, blank=True)
+	sex = models.CharField(max_length=20, choices=SEX_CHOICES, default='male')
+	email = models.EmailField(max_length = 150, null=True, blank=True)
+	mobile = models.CharField(max_length=20, null=True, blank=True)
+	blood_group = models.CharField(max_length=50, null=True, blank=True)
+	blood_relationship = models.CharField(max_length=50, null=True, blank=True)
+	locality = models.CharField(max_length=100, null=True, blank=True)
+	address = models.CharField(max_length=100, null=True, blank=True)
+	address2 = models.CharField(max_length=100, null=True, blank=True)
+	city = models.CharField(max_length=100, null=True, blank=True)
+	state = models.CharField(max_length=100, null=True, blank=True)
+	country = models.CharField(max_length=100, null=True, blank=True)
+	pincode = models.IntegerField(null=True, blank=True)
+	latitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
+	longitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
+	language = models.CharField(max_length=250, null=True, blank=True)
+	language_id = models.IntegerField(null=True, blank=True)
+	status = models.BooleanField(default=False)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "FamilyMemberProfiles"
+	
+	def __str__(self):
+		return self.name
+
+#####################################  end profile links  #####################################
 
 # A projected coordinate system (only valid for South Texas!)
 # is used, units are in meters.
@@ -159,8 +232,9 @@ class UsersEducations(models.Model):
 	board = models.CharField(max_length=150, null=True, blank=True)
 	grade = models.IntegerField(null=True, blank=True)
 	passing_year = models.CharField(max_length=10, null=True, blank=True)
+	from_at = models.DateField(null=True, blank=True)
+	end_at = models.DateField(null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
-	#user_id = models.IntegerField(null=True, blank=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
 	status = models.BooleanField(default=False)
@@ -195,8 +269,9 @@ class UsersClinics(models.Model):
 	longitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
 	image = models.FileField('image', upload_to="clinics_docs/", null=True, blank=True)
 	file = models.FileField('file', upload_to="clinics_docs/", null=True, blank=True)
+	from_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
+	to_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 	status = models.BooleanField(default=False)
-	#user_id = models.IntegerField(null=True, blank=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	is_deleted = models.BooleanField(default=False)
 	created_by = models.IntegerField(null=True, blank=True)
@@ -211,6 +286,25 @@ class UsersClinics(models.Model):
 
 	def __str__(self):
 		return self.name
+
+class UsersClinicImages(models.Model):
+	clinic = models.ForeignKey(UsersClinics, on_delete=models.CASCADE, related_name="clinic")
+	subject = models.CharField(max_length=150, null=True, blank=True, default="Home Address")
+	image = models.FileField('image', upload_to="clinic_image/", null=True, blank=True)
+	status = models.BooleanField(default=False)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "UsersClinicImages"
+
+	def __str__(self):
+		return self.subject
 
 # Section B: Profile verification
 # 1. Doctor identity proof, 
@@ -326,6 +420,7 @@ class EstablishmentTimings(models.Model):
 	message = models.CharField(max_length=150, null=True, blank=True)
 	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
 	user_id = models.IntegerField(null=True, blank=True)
+	clinic = models.ForeignKey(UsersClinics, on_delete=models.CASCADE, related_name="est_clinic", null=True, blank=True)
 	description = models.TextField(null=True, blank=True)
 	status = models.BooleanField(default=False)
 	is_deleted = models.BooleanField(default=False)
