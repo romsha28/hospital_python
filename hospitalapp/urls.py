@@ -47,6 +47,7 @@ urlpatterns = [
     #path('logout/', 'django.contrib.auth.views.logout',{'next_page': '/login/'}),
     #path('logout/', auth.LogoutView.as_view(template_name ='user/login.html'), name ='logout'),
     path('register/', user_view.register, name ='register'),
+    path('v1/api/', include('v1.patientapi.urls')),
     ##### user related path##########################
     path('__debug__/', include(debug_toolbar.urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

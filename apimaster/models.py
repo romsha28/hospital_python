@@ -3,9 +3,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 from datetime import date
 from django.utils import timezone
 from django.contrib.auth.models import User
-#from django.contrib.gis.db import models
+# from django.contrib.gis.db import models
 # from django.views.decorators.csrf import csrf_protect
-from hospital.models import *
+# from hospital.models import * 
+from hospital.models import Treatments
 
 SEX_CHOICES = (
     ('male','Male'),
@@ -26,7 +27,6 @@ Occupation = (
 # 4. Establishment details. [Clinic info]
 
 class UserProfiles(models.Model):
-	#user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile")
 	name = models.CharField(max_length=100, null=True, blank=True)
 	title = models.CharField(max_length=120, null=True, blank=True, default="General User")
 	about = models.TextField(null=True, blank=True)
@@ -35,7 +35,6 @@ class UserProfiles(models.Model):
 	dob = models.DateField(null=True, blank=True)
 	occupation = models.CharField(max_length=20, choices=Occupation, default='patient')
 	specialties = models.CharField(max_length=150, null=True, blank=True)
-	#specialty_id = models.IntegerField(null=True, blank=True)
 	specialty = models.ForeignKey(Treatments, on_delete=models.CASCADE, null=True, blank=True, default=1)
 	language = models.CharField(max_length=250, null=True, blank=True)
 	language_id = models.IntegerField(null=True, blank=True)
@@ -56,9 +55,9 @@ class UserProfiles(models.Model):
 	pincode = models.IntegerField(null=True, blank=True)
 	latitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
 	longitude_coordinate = models.CharField(max_length=100, null=True, blank=True)
-	#user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile")
 	section_flag = models.TextField(null=True, blank=True, default='[False, False, False]')
 	flag_count = models.IntegerField(null=True, blank=True, default=0)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='profile_user')
 	users_id = models.IntegerField(null=True, blank=True)
 	profile_id = models.IntegerField(null=True, blank=True)
 	verification = models.IntegerField(null=True, blank=True, default=0)
@@ -287,6 +286,30 @@ class UsersClinics(models.Model):
 	def __str__(self):
 		return self.name
 
+class EstablishmentTimings(models.Model):
+	name = models.CharField(max_length=50, null=True, blank=True, default="Name of days")
+	start_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
+	end_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
+	message = models.CharField(max_length=150, null=True, blank=True)
+	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='clinic_time_user')
+	clinic = models.ForeignKey(UsersClinics, on_delete=models.CASCADE, related_name="est_clinic", null=True, blank=True)
+	description = models.TextField(null=True, blank=True)
+	status = models.BooleanField(default=False)
+	is_deleted = models.BooleanField(default=False)
+	created_by = models.IntegerField(null=True, blank=True)
+	updated_by = models.IntegerField(null=True, blank=True)
+	deleted_by = models.IntegerField(null=True, blank=True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(null=True, blank=True)
+	deleted_at = models.DateTimeField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = "EstablishmentTimings"
+
+	def __str__(self):
+		return self.name
+
 class UsersClinicImages(models.Model):
 	clinic = models.ForeignKey(UsersClinics, on_delete=models.CASCADE, related_name="clinic")
 	subject = models.CharField(max_length=150, null=True, blank=True, default="Home Address")
@@ -409,30 +432,6 @@ class MapLocations(models.Model):
 
 	class Meta:
 		verbose_name = "MapLocations"
-
-	def __str__(self):
-		return self.name
-
-class EstablishmentTimings(models.Model):
-	name = models.CharField(max_length=50, null=True, blank=True, default="identity text")
-	start_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
-	end_at = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
-	message = models.CharField(max_length=150, null=True, blank=True)
-	file = models.FileField('file', upload_to="doctors_docs/", null=True, blank=True)
-	user_id = models.IntegerField(null=True, blank=True)
-	clinic = models.ForeignKey(UsersClinics, on_delete=models.CASCADE, related_name="est_clinic", null=True, blank=True)
-	description = models.TextField(null=True, blank=True)
-	status = models.BooleanField(default=False)
-	is_deleted = models.BooleanField(default=False)
-	created_by = models.IntegerField(null=True, blank=True)
-	updated_by = models.IntegerField(null=True, blank=True)
-	deleted_by = models.IntegerField(null=True, blank=True)
-	created_at = models.DateTimeField(default=timezone.now)
-	updated_at = models.DateTimeField(null=True, blank=True)
-	deleted_at = models.DateTimeField(null=True, blank=True)
-
-	class Meta:
-		verbose_name = "EstablishmentTimings"
 
 	def __str__(self):
 		return self.name

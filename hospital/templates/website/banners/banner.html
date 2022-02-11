@@ -3,19 +3,83 @@
 {% block start %}
 {% load static %}
 
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: fit-content;
+  float: right;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+}
+
+/* Style the close button */
+.topright {
+  float: right;
+  cursor: pointer;
+}
+
+.topright:hover {color: red;}
+
+.card-title {
+    width: fit-content;
+    float: left;
+}
+
+</style>
+
+
+
+
+
 <div class="row">
 
 	<div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
               	<div class="card-header ">
               		<div class="row">
-	              		<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+	              		<div class="col-sm-4 col-md-2 col-lg-2 col-xl-2">
 	              			<a href="/hospital/banner-create" class="btn btn-outline-primary btn-sm">Create Banner</a>
 	              		</div>
-	              		<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+	              		<div class="col-sm-4 col-md-6 col-lg-6 col-xl-6">
 	              			<h4 class="card-title">Banners</h4>
+
+                      <div class="tab">
+                        <button id="defaultOpen" class="tablinks" onclick="openCity(event, 'Website')">Website</button>
+                        <button class="tablinks" onclick="openCity(event, 'Mobile')">Mobile</button>
+                      </div>
+
 	              		</div>
 	              		<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+
                     <!-- ======================= -->
                      <div class="justify-content-end d-flex">
                       <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
@@ -35,7 +99,8 @@
               		</div>
               	</div>
                 <div class="card-body">
-                  <div class="table-responsive">
+                  <!-- ======================= -->   
+                  <div id="Website" class="table-responsive tabcontent">
                     <table id="example" class="table table-striped display expandable-table" style="width:100%">
                       <thead>
                         <tr><th>Sr.</th><th>Image</th><th>Title</th><th>Description</th><th>Status</th><th>Created Date</th><th>Actions</th></tr>
@@ -73,6 +138,46 @@
                       </tbody>
                     </table>
                   </div>
+
+                  <div id="Mobile" class="table-responsive tabcontent">
+                    <table id="example" class="table table-striped display expandable-table" style="width:100%">
+                      <thead>
+                        <tr><th>Sr.</th><th>Image</th><th>Title</th><th>Description</th><th>Status</th><th>Created Date</th><th>Actions</th></tr>
+                      </thead>
+                      <tbody>
+                        {% for item in items %}
+                        <tr>
+                          <td>{{ item.id }}</td>
+                          <td>
+                            {% if item.primary_image %}
+                            <img src="/media/{{item.primary_image}}"/>
+                            {% else %}
+                            <img src='{% static "icons/default-img.png" %}' alt="profile"/>
+                            {% endif %}
+                          </td>
+                          <td>{{ item.title }}</td>
+                          <td>{{ item.description }}</td>
+                          <td>
+                            <a href="/hospital/banner-status/{{ item.id }}">
+                              {% if item.status == 0 %}
+                              <i class="mdi mdi-toggle-switch-off btndx"></i>
+                              {% else %}
+                              <i class="mdi mdi-toggle-switch u-on"></i>
+                              {% endif %}
+                            </a>
+                          </td>
+                          <td>{{ item.created_at }}</td>
+                          <td>
+                            <a href="banner/{{item.id}}"><i class="mdi mdi-eye btni"></i></a>
+                            <a href="banner-edit/{{item.id}}"><i class="mdi mdi-pencil btns"></i></a>
+                            <a href="#"><i class="mdi mdi-delete btnd"></i></a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- ======================= -->   
                 </div>
                 <div class="card-footer">
                 	Notes:
@@ -120,6 +225,26 @@ $('form').submit(function(e){
     e.preventDefault();
 });
 
+</script>
+
+
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
 </script>
 
 {% endblock start %}

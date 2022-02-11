@@ -23,8 +23,8 @@ from django.db.models.functions import Concat
 
 import base64
 from django.core.files.base import ContentFile
-from datetime import date, datetime, timedelta
 import datetime
+from datetime import date, datetime, timedelta
 from json import dumps
 import json
 import ast
@@ -57,8 +57,6 @@ from rest_framework.renderers import JSONRenderer
 #             raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
 #         return (token.user, token)
 
-
-
 @api_view(['GET'])
 def getSubscriptionPlans(request):
     try:
@@ -86,6 +84,17 @@ def getSubscriptionPlans(request):
         return JsonResponse(response, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def getPaymentModes(request):
+    if request.method == 'GET':
+        items = PaymentModes.objects.all()
+        if items is not None:
+            data_serializer = getPaymentModesSerializer(items, many=True)
+            return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def getPlans(request):
@@ -129,6 +138,28 @@ def getProducts(request):
     except User.DoesNotExist:
         return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+def getWebsiteBanners(request):
+    if request.method == 'GET':
+        #items = Banners.objects.all()
+        items = Banners.objects.filter(type_id=1)
+        if items is not None and items:
+            data_serializer = getBannersSerializer(items, many=True)
+            return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getMobileBanners(request):
+    if request.method == 'GET':
+        items = Banners.objects.filter(type_id=2)
+        if items is not None and items:
+            data_serializer = getBannersSerializer(items, many=True)
+            return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def getBannerHome(request):
@@ -158,424 +189,6 @@ def getBannerHome(request):
     except User.DoesNotExist:
         return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['POST'])
-def postRecommendedDoctors(request):
-    try:
-        response = {
-                "doctorslist": [
-                    {
-                        "id": 1,
-                        "name": "dash kamal",
-                        "mobile": "9846584616",
-                        "email": "dashkamal@mailinator.com",
-                        "photo": "/media/profile_photo/image_Wn6BFli.png",
-                        "sex": "male",
-                        "dob": "2021-11-10",
-                        "occupation": "doctor",
-                        "about": "",
-                        "work_experience": None,
-                        "description": "update base64 image 2021-12-29 15:58:18",
-                        "specialties": None,
-                        "specialty_id": 1,
-                        "language": None,
-                        "blood_group": "",
-                        "locality": "",
-                        "address": "noida",
-                        "address2": "",
-                        "city": "",
-                        "state": "",
-                        "country": "",
-                        "pincode": None,
-                        "latitude_coordinate": "",
-                        "longitude_coordinate": "",
-                        "verification": 1,
-                        "verification_text": "Aprooved",
-                        "created_by": None,
-                        "created_at": "2021-11-29T17:49:31.472602+05:30",
-                        "status": True,
-                        "treatmentdata": [
-                            {
-                                "id": 1,
-                                "name": "General Medicine",
-                                "description": "General Medicine",
-                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 19,
-                        "name": "yogi4",
-                        "mobile": None,
-                        "email": "yogi4@mailinator.com",
-                        "photo": None,
-                        "sex": "male",
-                        "dob": None,
-                        "occupation": "doctor",
-                        "about": None,
-                        "work_experience": None,
-                        "description": None,
-                        "specialties": None,
-                        "specialty_id": 1,
-                        "language": None,
-                        "blood_group": None,
-                        "locality": None,
-                        "address": None,
-                        "address2": None,
-                        "city": None,
-                        "state": None,
-                        "country": None,
-                        "pincode": None,
-                        "latitude_coordinate": None,
-                        "longitude_coordinate": None,
-                        "verification": 1,
-                        "verification_text": "Aprooved",
-                        "created_by": None,
-                        "created_at": "2021-12-12T20:53:42.382056+05:30",
-                        "status": True,
-                        "treatmentdata": [
-                            {
-                                "id": 2,
-                                "name": "General Surgery",
-                                "description": "General Surgery",
-                                "primary_image": "/media/treatments/WomanHealth.jpg"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 20,
-                        "name": "yogi to 102",
-                        "mobile": None,
-                        "email": "yogi6@mailinator.com",
-                        "photo": "/media/profile_photo/20723-2-mario-image_pcRTCQ0.png",
-                        "sex": "male",
-                        "dob": None,
-                        "occupation": "doctor",
-                        "about": None,
-                        "work_experience": None,
-                        "description": "demo description",
-                        "specialties": None,
-                        "specialty_id": 1,
-                        "language": None,
-                        "blood_group": None,
-                        "locality": None,
-                        "address": None,
-                        "address2": None,
-                        "city": None,
-                        "state": None,
-                        "country": None,
-                        "pincode": None,
-                        "latitude_coordinate": None,
-                        "longitude_coordinate": None,
-                        "verification": 2,
-                        "verification_text": "Rejected",
-                        "created_by": None,
-                        "created_at": "2021-12-12T20:57:44.296325+05:30",
-                        "status": False,
-                        "treatmentdata": [
-                            {
-                                "id": 1,
-                                "name": "General Medicine",
-                                "description": "General Medicine",
-                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
-                            },
-                            {
-                                "id": 2,
-                                "name": "General Surgery",
-                                "description": "General Surgery",
-                                "primary_image": "/media/treatments/WomanHealth.jpg"
-                            },
-                            {
-                                "id": 3,
-                                "name": "Psychiatry",
-                                "description": None,
-                                "primary_image": None
-                            },
-                            {
-                                "id": 4,
-                                "name": "General Physician",
-                                "description": None,
-                                "primary_image": None
-                            }
-                        ]
-                    },
-                    {
-                        "id": 31,
-                        "name": "yogi to 121",
-                        "mobile": None,
-                        "email": None,
-                        "photo": "/media/profile_photo/image_lKCsLDD.png",
-                        "sex": "male",
-                        "dob": None,
-                        "occupation": "doctor",
-                        "about": None,
-                        "work_experience": None,
-                        "description": "update base64 image 2022-01-21 12:19:08",
-                        "specialties": None,
-                        "specialty_id": None,
-                        "language": "['ab', 'en']",
-                        "blood_group": None,
-                        "locality": None,
-                        "address": None,
-                        "address2": None,
-                        "city": None,
-                        "state": None,
-                        "country": None,
-                        "pincode": None,
-                        "latitude_coordinate": None,
-                        "longitude_coordinate": None,
-                        "verification": 0,
-                        "verification_text": None,
-                        "created_by": None,
-                        "created_at": "2021-12-29T22:30:58.906327+05:30",
-                        "status": False,
-                        "treatmentdata": [
-                            {
-                                "id": 1,
-                                "name": "General Medicine",
-                                "description": "General Medicine",
-                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
-                            },
-                            {
-                                "id": 2,
-                                "name": "General Surgery",
-                                "description": "General Surgery",
-                                "primary_image": "/media/treatments/WomanHealth.jpg"
-                            },
-                            {
-                                "id": 3,
-                                "name": "Psychiatry",
-                                "description": None,
-                                "primary_image": None
-                            },
-                            {
-                                "id": 4,
-                                "name": "General Physician",
-                                "description": None,
-                                "primary_image": None
-                            }
-                        ]
-                    }
-                ],
-                "message": "get successfully!",
-                "status": status.HTTP_200_OK
-            }
-        # 'status' : status.HTTP_200_OK
-        # dataJSON = dumps(response)
-        # dataJSON = json.dumps(response)
-        # dataJSON = json.loads(response)
-        return JsonResponse(response, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['POST'])
-def postTreatmentWiseDoctorsTest(request):
-    try:
-        response = {
-                "doctorslist": [
-                    {
-                        "id": 44,
-                        "name": "yogi to 121",
-                        "mobile": "9846584616",
-                        "email": "dashkamal@mailinator.com",
-                        "photo": "/media/profile_photo/image_Wn6BFli.png",
-                        "sex": "male",
-                        "dob": "2021-11-10",
-                        "occupation": "doctor",
-                        "about": "",
-                        "work_experience": None,
-                        "description": "update base64 image 2021-12-29 15:58:18",
-                        "specialties": None,
-                        "specialty_id": 1,
-                        "language": None,
-                        "blood_group": "",
-                        "locality": "",
-                        "address": "noida",
-                        "address2": "",
-                        "city": "",
-                        "state": "",
-                        "country": "",
-                        "pincode": None,
-                        "latitude_coordinate": "",
-                        "longitude_coordinate": "",
-                        "verification": 1,
-                        "verification_text": "Aprooved",
-                        "created_by": None,
-                        "created_at": "2021-11-29T17:49:31.472602+05:30",
-                        "status": True,
-                        "treatmentdata": [
-                            {
-                                "id": 1,
-                                "name": "General Medicine",
-                                "description": "General Medicine",
-                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 19,
-                        "name": "yogi4",
-                        "mobile": None,
-                        "email": "yogi4@mailinator.com",
-                        "photo": None,
-                        "sex": "male",
-                        "dob": None,
-                        "occupation": "doctor",
-                        "about": None,
-                        "work_experience": None,
-                        "description": None,
-                        "specialties": None,
-                        "specialty_id": 1,
-                        "language": None,
-                        "blood_group": None,
-                        "locality": None,
-                        "address": None,
-                        "address2": None,
-                        "city": None,
-                        "state": None,
-                        "country": None,
-                        "pincode": None,
-                        "latitude_coordinate": None,
-                        "longitude_coordinate": None,
-                        "verification": 1,
-                        "verification_text": "Aprooved",
-                        "created_by": None,
-                        "created_at": "2021-12-12T20:53:42.382056+05:30",
-                        "status": True,
-                        "treatmentdata": [
-                            {
-                                "id": 2,
-                                "name": "General Surgery",
-                                "description": "General Surgery",
-                                "primary_image": "/media/treatments/WomanHealth.jpg"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 20,
-                        "name": "yogi to 102",
-                        "mobile": None,
-                        "email": "yogi6@mailinator.com",
-                        "photo": "/media/profile_photo/20723-2-mario-image_pcRTCQ0.png",
-                        "sex": "male",
-                        "dob": None,
-                        "occupation": "doctor",
-                        "about": None,
-                        "work_experience": None,
-                        "description": "demo description",
-                        "specialties": None,
-                        "specialty_id": 1,
-                        "language": None,
-                        "blood_group": None,
-                        "locality": None,
-                        "address": None,
-                        "address2": None,
-                        "city": None,
-                        "state": None,
-                        "country": None,
-                        "pincode": None,
-                        "latitude_coordinate": None,
-                        "longitude_coordinate": None,
-                        "verification": 2,
-                        "verification_text": "Rejected",
-                        "created_by": None,
-                        "created_at": "2021-12-12T20:57:44.296325+05:30",
-                        "status": False,
-                        "treatmentdata": [
-                            {
-                                "id": 1,
-                                "name": "General Medicine",
-                                "description": "General Medicine",
-                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
-                            },
-                            {
-                                "id": 2,
-                                "name": "General Surgery",
-                                "description": "General Surgery",
-                                "primary_image": "/media/treatments/WomanHealth.jpg"
-                            },
-                            {
-                                "id": 3,
-                                "name": "Psychiatry",
-                                "description": None,
-                                "primary_image": None
-                            },
-                            {
-                                "id": 4,
-                                "name": "General Physician",
-                                "description": None,
-                                "primary_image": None
-                            }
-                        ]
-                    },
-                    {
-                        "id": 31,
-                        "name": "yogi to 121",
-                        "mobile": None,
-                        "email": None,
-                        "photo": "/media/profile_photo/image_lKCsLDD.png",
-                        "sex": "male",
-                        "dob": None,
-                        "occupation": "doctor",
-                        "about": None,
-                        "work_experience": None,
-                        "description": "update base64 image 2022-01-21 12:19:08",
-                        "specialties": None,
-                        "specialty_id": None,
-                        "language": "['ab', 'en']",
-                        "blood_group": None,
-                        "locality": None,
-                        "address": None,
-                        "address2": None,
-                        "city": None,
-                        "state": None,
-                        "country": None,
-                        "pincode": None,
-                        "latitude_coordinate": None,
-                        "longitude_coordinate": None,
-                        "verification": 0,
-                        "verification_text": None,
-                        "created_by": None,
-                        "created_at": "2021-12-29T22:30:58.906327+05:30",
-                        "status": False,
-                        "treatmentdata": [
-                            {
-                                "id": 1,
-                                "name": "General Medicine",
-                                "description": "General Medicine",
-                                "primary_image": "/media/treatments/livercontent_hEXgOAC.png"
-                            },
-                            {
-                                "id": 2,
-                                "name": "General Surgery",
-                                "description": "General Surgery",
-                                "primary_image": "/media/treatments/WomanHealth.jpg"
-                            },
-                            {
-                                "id": 3,
-                                "name": "Psychiatry",
-                                "description": None,
-                                "primary_image": None
-                            },
-                            {
-                                "id": 4,
-                                "name": "General Physician",
-                                "description": None,
-                                "primary_image": None
-                            }
-                        ]
-                    }
-                ],
-                "message": "get successfully!",
-                "status": status.HTTP_200_OK
-            }
-        # 'status' : status.HTTP_200_OK
-        # dataJSON = dumps(response)
-        # dataJSON = json.dumps(response)
-        # dataJSON = json.loads(response)
-        return JsonResponse(response, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 def getMultiData(reqquest):
@@ -890,10 +503,9 @@ def profile_list(request):
 @api_view(['POST'])
 def doctors_list(request):
     if request.method == 'POST':
-        #specialties = request.data.get('specialties')
         items = UserProfiles.objects.filter(occupation='doctor')
         if items is not None:
-            data_serializer = UserProfilesSerializer(items, many=True)
+            data_serializer = TreatmentWiseDoctorsNewSerializer(items, many=True)
             return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
             result = items
         else:
@@ -903,15 +515,32 @@ def doctors_list(request):
 @api_view(['POST'])
 def postTreatmentWiseDoctors(request):
     if request.method == 'POST':
-        #specialties = request.data.get('specialties')
         items = UserProfiles.objects.filter(occupation='doctor')
         if items is not None:
-            data_serializer = TreatmentWiseDoctorsSerializer(items, many=True)
-            data = data_serializer.data
-            data[1] = 'male'
-            #data['gender'] = 'male'
-            return Response({'doctorslist': data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
-            #return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            data_serializer = TreatmentWiseDoctorsNewSerializer(items, many=True)
+            return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def postRecommendedDoctors(request):
+    if request.method == 'POST':
+        items = UserProfiles.objects.filter(occupation='doctor')
+        if items is not None:
+            data_serializer = TreatmentWiseDoctorsNewSerializer(items, many=True)
+            return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def postTreatmentWiseDoctorsTest(request):
+    if request.method == 'POST':
+        items = UserProfiles.objects.filter(occupation='doctor')
+        if items is not None:
+            data_serializer = TreatmentWiseDoctorsNewSerializer(items, many=True)
+            return Response({'doctorslist': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
         else:
             return Response({'message': "Record Doesn't exist",'status':404},status=status.HTTP_404_NOT_FOUND)
     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
@@ -1157,38 +786,6 @@ def patients_list(request):
             result = 'Success'
         users_serializer = UserProfilesSerializer(result, many=True)
         return JsonResponse(users_serializer.data, safe=False)
-
-@api_view(['POST'])
-def xprofileStores(request):
-    if request.method == 'POST':
-        obj = UserProfiles()
-        obj.name = request.POST['name']
-        obj.occupation = 'doctor'
-        obj.email = request.POST['email']
-        obj.mobile = request.POST['mobile']
-        obj.sex = request.POST['sex']
-        obj.address = request.POST['address']
-        obj.dob = request.POST['dob']
-        #obj.description = 'demo description'
-        #obj.amount = Decimal(request.POST['amount'])
-        obj.save()
-        result = 'Success'
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #return JsonResponse(users_serializer.data, safe=False)
-
-@api_view(['POST'])
-def xdoctorCouncilStores(request):
-    if request.method == 'POST':
-        obj = UsersRegistrationCouncils()
-        obj.name = request.POST['name']
-        obj.registration_no = 'doctor'
-        obj.registration_year = request.POST['email']
-        obj.description = 'demo description'
-        obj.save()
-        result = 'Success'
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def doctorCouncilStores(request):
@@ -1756,61 +1353,42 @@ def ConsultationFeesUpdate(request):
         return JsonResponse({'message': 'successfully updated!'}, status=status.HTTP_201_CREATED)
     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST'])
-def getXDoctorAppointments(request, pk):
-    try:
-        #response = UserProfiles.objects.filter(occupation='doctor')
-        #data = models.UserProfiles.objects.annotate(full_name=Concat('name', V(' '), 'email')).filter(Q(users_id=pk))
-        #data = Appointments.objects.filter(doctor_id=pk)[0]
-        #data = Appointments.objects.get(doctor_id=pk) AppointmentSerializer
-        data = AppointmentSerializer.objects.filter(id=2).first()
-        user = UserProfiles.objects.get(users_id=pk)
-        response = {
-                    'profile_detail': {
-                        'name':user.name,
-                        'mobile':user.mobile,
-                        'email':user.email,
-                        'photo':json.dumps(str(user.photo)),
-                        'sex':user.sex,
-                        'dob':user.dob,
-                        'address':user.address,
-                        'status':user.status
-                    }
-                }
-        # response = []
-        # dictionary = {}
-        # for row in data:
-        #     dictionary = {
-        #         'id' : row.id,
-        #         'name': row.name
-        #     }
-        # xresponse = {
-        #     "name":data.id,
-        #     "mobile":data.id
-        # }
-        #response.append(dictionary)
-        #response.update(dictionary)
-        return JsonResponse(response, status=status.HTTP_200_OK)
-    except ObjectDoesNotExist:
-        return JsonResponse({'message': 'Record does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
 @api_view(['POST'])
 def postDoctorAppointments(request):
     if request.method == 'POST':
         userID = request.data.get('user_id', None)
         obj = Appointments()
         obj.name = request.data.get('name')
-        obj.patient_id = userID
+        obj.title = request.data.get('title')
+        obj.dob = request.data.get('dob')
+        obj.sex = request.data.get('sex')
+        obj.email = request.data.get('email')
         obj.mobile = request.data.get('mobile')
+        obj.language = request.data.get('language')
+        obj.blood_group = request.data.get('blood_group')
+        obj.locality = request.data.get('locality')
         obj.address = request.data.get('address')
+        obj.address2 = request.data.get('address2')
         obj.city = request.data.get('city')
+        obj.state = request.data.get('state')
+        obj.country = request.data.get('country')
+        obj.pincode = request.data.get('pincode')
+        obj.patient_id = userID
         obj.doctor_id = request.data.get('doctor_id')
-        obj.illness_information = request.data.get('illness_information')
-        obj.amount = request.data.get('amount')
-        obj.doctor_appointment_at = request.data.get('doctor_appointment_at')
+        obj.clinic_id = request.data.get('clinic_id')
+        obj.plan_id = request.data.get('plan_id')
+        obj.appointment_id = request.data.get('appointment_id')
+        obj.appointment_for = request.data.get('appointment_for')
+        obj.appointment_from = request.data.get('appointment_from')
+        obj.appointment_to = request.data.get('appointment_to')
+        obj.appointment_status = request.data.get('appointment_status')
         obj.meeting_time_period = request.data.get('meeting_time_period')
-        #obj.description = 'Identity proof submited'
-        #obj.save()
+        obj.translation_id = request.data.get('translation_id')
+        obj.fee_amount = request.data.get('fee_amount')
+        obj.payment_status = request.data.get('payment_status')
+        obj.payment_type = request.data.get('payment_type')
+        obj.illness_information = request.data.get('illness_information')
+        obj.description = request.data.get('description')
         try:
             obj.save()
         except KeyError:
@@ -2142,12 +1720,23 @@ def getDoctorSlots(request):
                 for n in range(1,slots+1):
                     if n>=1:
                         date_time_str = date_str+' '+time_str
-                        date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                        # date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                        date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
                         updated_time = date_time_obj + timedelta(minutes=15)
                         pre_time = date_time_obj.time()
                         next_time = updated_time.time()
+                        #======================================
+                        appointment = Appointments.objects.get(doctor_id=31)
+                        dateOne = str(appointment.appointment_from)
+                        timeStart = datetime.strptime(dateOne[:-6], '%Y-%m-%d %H:%M:%S').time()
+                        dateTwo = str(appointment.appointment_from)
+                        timeEnd = datetime.strptime(dateTwo[:-6], '%Y-%m-%d %H:%M:%S').time()
+                        check_slot = isNowInTimePeriod(timeStart, timeEnd, pre_time)
+                        #print("check_slot: ")
+                        #check_slot = isNowInTimePeriod(dt.time(13,45), dt.time(21,30), dt.datetime.now().time())
+                        #======================================
                         time_str = str(next_time)
-                        slotsdata.append({"start_at": pre_time,"end_at": next_time})
+                        slotsdata.append({"start_at": pre_time,"end_at": next_time,"slot_status":check_slot})
                 #############################################################
                 response = {
                     'slots':slotsdata,
@@ -2181,6 +1770,12 @@ def postTreatmentWiseDoctorNew(request):
 #       base functions                                                                                #
 #######################################################################################################
 
+def isNowInTimePeriod(startTime, endTime, nowTime): 
+    if startTime < endTime: 
+        return nowTime > startTime and nowTime < endTime 
+    else:
+        return nowTime > startTime or nowTime < endTime
+
 def dhms_to_sec(dhms_str):
     '''supports also format of d:h:m:s, h:m:s, m:s and s'''
     _,d,h,m,s = (':0'*10+dhms_str).rsplit(':',4)
@@ -2206,6 +1801,87 @@ def base64Data(data, name=None):
     if not name:
         name = _name.split(":")[-1]
     return ContentFile(base64.b64decode(_img_str), name='{}.{}'.format(name, ext))
+
+#######################################################################################################
+#       Not used functons                                                                             #
+#######################################################################################################
+
+
+@api_view(['POST'])
+def getDoctorSlotsx(request):
+    if request.method == 'POST':
+        pk = request.data.get('doctor_id')
+        q_date = request.data.get('q_date')
+        hospital_id = request.data.get('hospital_id')
+        if pk is None:
+            return Response({'message': 'Please pass doctor id!','status' : 400}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            User = UserProfiles.objects.get(id=pk)
+            userid = User.users_id
+            if User.occupation == "doctor":
+                EstablishmentTiming = EstablishmentTimings.objects.get(user_id=userid)
+                date_str = '2018-06-29'
+                time_str = str(EstablishmentTiming.start_at) # '08:15:27'
+                #time_str ='08:15:27'
+                ###### Slots ################################################
+                seconds_diff = int(hms_to_s(str(EstablishmentTiming.end_at)))-int(hms_to_s(str(EstablishmentTiming.start_at)))
+                minutes_diff = seconds_diff/60
+                slots = int(minutes_diff/15)
+                slotsdata = []
+                for n in range(1,slots+1):
+                    if n>=1:
+                        date_time_str = date_str+' '+time_str
+                        date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+                        updated_time = date_time_obj + timedelta(minutes=15)
+                        pre_time = date_time_obj.time()
+                        next_time = updated_time.time()
+                        time_str = str(next_time)
+                        slotsdata.append({"start_at": pre_time,"end_at": next_time})
+                #############################################################
+                response = {
+                    'slots':slotsdata,
+                    'message': 'get successfully!',
+                    'status' : status.HTTP_200_OK     
+                }
+                return JsonResponse(response, status=status.HTTP_200_OK)
+                #return Response({'data': data_serializer.data, 'message': 'get successfully!','status':200}, status=status.HTTP_200_OK)
+            else:
+                return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'The Page does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def xprofileStores(request):
+    if request.method == 'POST':
+        obj = UserProfiles()
+        obj.name = request.POST['name']
+        obj.occupation = 'doctor'
+        obj.email = request.POST['email']
+        obj.mobile = request.POST['mobile']
+        obj.sex = request.POST['sex']
+        obj.address = request.POST['address']
+        obj.dob = request.POST['dob']
+        #obj.description = 'demo description'
+        #obj.amount = Decimal(request.POST['amount'])
+        obj.save()
+        result = 'Success'
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #return JsonResponse(users_serializer.data, safe=False)
+
+@api_view(['POST'])
+def xdoctorCouncilStores(request):
+    if request.method == 'POST':
+        obj = UsersRegistrationCouncils()
+        obj.name = request.POST['name']
+        obj.registration_no = 'doctor'
+        obj.registration_year = request.POST['email']
+        obj.description = 'demo description'
+        obj.save()
+        result = 'Success'
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def profileImageUpdate(request):
@@ -2236,7 +1912,6 @@ def profileImageUpdate(request):
         obj.save()
         return JsonResponse({'message': 'successfully updated!'}, status=status.HTTP_201_CREATED)
     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 #######################################################################################################
 #       Auth User Register and Login                                                                  #

@@ -31,9 +31,13 @@ INTERNAL_IPS = [
 ]
 
 # Application definition
+
 INDRANIL_WORK = ['v1.patientapi.apps.PatientapiConfig',]
+
+
 INSTALLED_APPS = [
     'user.apps.UserConfig',
+
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -91,10 +95,17 @@ WSGI_APPLICATION = 'hospitalapp.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+
+
+
+
+
+
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     
     # 'default': {
     #     'ENGINE': 'djongo',
@@ -105,20 +116,24 @@ DATABASES = {
     #     }  
     # }
 
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'hospitaldjango_db',
-    #     'USER': 'root',
-    #     'PASSWORD': '123456',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    # }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'hospital',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
 
     #'host': 'pymongo.MongoClient("mongodb://brtechgeeks:CCzzgyxxdc88@cluster0-shard-00-00.huvf6.mongodb.net:27017,cluster0-shard-00-01.huvf6.mongodb.net:27017,cluster0-shard-00-02.huvf6.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-uzef1q-shard-0&authSource=admin&retryWrites=true&w=majority")'
     #'host': 'mongodb+srv://brtechgeeks:CCzzgyxxdc88@cluster0.huvf6.mongodb.net/test'
     #'host': 'mongodb+srv://<username>:<password>@<atlas cluster>/<myFirstDatabase>?retryWrites=true&w=majority'
 }
 
+
+# DATABASES['default'] = {
+
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -146,10 +161,11 @@ REST_FRAMEWORK = {
         #'rest_framework.authentication.SessionAuthentication',
         
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        #'rest_framework.permissions.IsAdminUser',
-        #'rest_framework.permissions.IsAuthenticated',
-    ]
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.AllowAny',
+    #     #'rest_framework.permissions.IsAdminUser',
+    #     #'rest_framework.permissions.IsAuthenticated',
+    # ]
 }
 
 #AUTH_USER_MODEL='UserManagement.Users'
@@ -167,7 +183,7 @@ CORS_ORIGIN_WHITELIST = (
 LANGUAGE_CODE = 'en-us'
 
 DATETIME_FORMAT="%Y-%m-%d %H:%M:%S"
-TIME_ZONE =  'Asia/Kolkata'
+TIME_ZONE =  'Asia/Calcutta'
 #TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True

@@ -19,6 +19,16 @@ from django.utils.translation import ugettext_lazy as _
 
 User = get_user_model()
 
+class getBannersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banners
+        fields = ('id', 'title', 'slug', 'description', 'long_description', 'primary_image', 'created_at')
+
+class getPaymentModesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentModes
+        fields = ('id', 'name', 'created_at')
+
 class getSubscriptionPlansSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubscriptionPlans
@@ -155,7 +165,7 @@ class TreatmentWiseDoctorsNewSerializer(serializers.ModelSerializer):
     specialty = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = UserProfiles
-        fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation", 'specialty')
+        fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation", "about", "work_experience", "description", "specialties", "specialty_id", "language", "blood_group", "locality", "address", "address2", "city", "state", "country", "pincode", "latitude_coordinate", "longitude_coordinate", "verification", "verification_text", "created_by", "created_at", "specialty")
         read_only_fields = ("id", "name", "mobile", "email", "photo", "sex", "dob", "occupation")
 
     def get_specialty(self, obj):
